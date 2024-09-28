@@ -65,7 +65,9 @@ export const SignUnPage = () => {
     },[userInputCheckPwText])
 
 async function checkIfIdExists(id) {
-    const q = query(collection(db, "users"), where("id", "==", userInputIdText));
+    const q = query(
+        collection(db, "users"),
+        where("id", "==", userInputIdText));
     const querySnapshot = await getDocs(q);
   
     // ID가 존재하면 true, 존재하지 않으면 false 반환

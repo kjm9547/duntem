@@ -1,6 +1,8 @@
 import React, { useState } from "react"
 import styled from "styled-components"
-
+import {query,collection,getDocs,where} from 'firebase/firestore'
+import { firebaseInitailizer } from "../../../firebase"
+import { useNavigate } from "react-router-dom"
 const Container = styled.div`
     display: flex;
     width: 100vw;
@@ -48,7 +50,24 @@ const LoginButon = styled.button`
 export const SignInPage = () => {
     const [userInputIdText,setUserInputIdText ] = useState('')
     const [userInputPwText,setUserInputPwText ] = useState('')
-    
+    const nav = useNavigate()
+    const {db}=firebaseInitailizer()
+
+    const onClickSignInbutton = async() => {
+        const q = query(
+            collection(db,"users"),
+            where("id","==",userInputIdText),
+            where("pw","==",userInputPwText)
+        )
+        const data = await getDocs(q)
+        data.forEach((doc)=>{
+            console.log(doc.data())}
+        )
+        
+        nav('/main')
+        
+        
+    }
     return(
         <Container>
             <div 
@@ -79,15 +98,18 @@ export const SignInPage = () => {
                         type="text"
                         value={userInputIdText}
                         placeholder="id를 입력해주세요."
-                        onChange={(e)=>{setUserInputIdText(e.value)}}
+                        onChange={(e)=>{setUserInputIdText(e.target.value)}}
                         />
                     <InputUserText 
                         type="password"
                         value={userInputPwText}
                         placeholder="pw를 입력해주세요."
-                        onChange={(e)=>{setUserInputPwText(e.value)}}
+                        onChange={(e)=>{setUserInputPwText(e.target.value)}}
                         />
-                    <LoginButon>로그인</LoginButon>
+                    <LoginButon
+                        onClick={()=>{onClickSignInbutton()}}>
+                        로그인
+                    </LoginButon>
                 </InputContainer>
                 </div>
             
