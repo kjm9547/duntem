@@ -14,7 +14,7 @@ const Container = styled.div`
     background-position: center ;
     background-repeat: no-repeat;
     z-index:0;
-    
+    color: white;
 `
 const TitleContainer = styled.div`
     display: flex;

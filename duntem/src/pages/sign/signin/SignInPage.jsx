@@ -3,6 +3,8 @@ import styled from "styled-components"
 import {query,collection,getDocs,where} from 'firebase/firestore'
 import { firebaseInitailizer } from "../../../firebase"
 import { useNavigate } from "react-router-dom"
+import { useDispatch } from "react-redux"
+import { registNowUser } from "../../../redux/reducer/userSlice"
 const Container = styled.div`
     display: flex;
     width: 100vw;
@@ -15,7 +17,7 @@ const Container = styled.div`
     background-position: center ;
     background-repeat: no-repeat;
     z-index:0;
-    
+    color: white;
 `
 const TitleContainer = styled.div`
     display: flex;
@@ -51,6 +53,8 @@ export const SignInPage = () => {
     const [userInputIdText,setUserInputIdText ] = useState('')
     const [userInputPwText,setUserInputPwText ] = useState('')
     const nav = useNavigate()
+    const dispatch = useDispatch()
+
     const {db}=firebaseInitailizer()
 
     const onClickSignInbutton = async() => {
@@ -61,12 +65,14 @@ export const SignInPage = () => {
         )
         const data = await getDocs(q)
         data.forEach((doc)=>{
-            console.log(doc.data())}
-        )
-        
-        nav('/main')
-        
-        
+            console.log('sign',doc.data())
+            dispatch(registNowUser(doc.data()))
+            if(doc.data().advantureGroup !== ''){
+                nav('/main')
+            } else {
+                nav('/regist/AdvantureInfo')
+            }
+        }) 
     }
     return(
         <Container>
