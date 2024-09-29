@@ -1,6 +1,4 @@
 
-import { initializeApp } from "firebase/app";
-import { getAuth, signInWithPopup, GoogleAuthProvider, } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 const IconButton = styled.button`
@@ -9,6 +7,8 @@ const IconButton = styled.button`
   width: 300px;
   height: 70px;
   margin-bottom: 10px;
+  border: 0.2px solid #A2A2B6;
+  color: white;
 `
 const IconLogo = styled.img`
   width: 20px;
