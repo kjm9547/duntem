@@ -25,6 +25,7 @@ const TitleContainer = styled.div`
     justify-content: center;
     flex: 0.2;
     height: 30vh;
+    background-color: #2B2B2B;
 `
 const SignButtonContainer = styled.div`
     display: flex;

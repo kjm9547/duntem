@@ -3,7 +3,8 @@ import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPopup, GoogleAuthProvider, } from "firebase/auth";
 import styled from "styled-components";
 import { firebaseInitailizer } from "../../firebase"; 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSignFb } from "../../hooks/useSignFb";
 
 const IconButton = styled.button`
   display:flex;
@@ -22,16 +23,33 @@ const IconLogo = styled.img`
 export const GoogleAuthButton = () => {
   const {auth} = firebaseInitailizer()
   const [userData,setUserData] = useState()
-  const handleGoogleLogin =() => {
+  const {
+    checkFirebaseIdExist,
+    insertFirbaseUserInfo} = useSignFb()
+
+  const registUserData = async(data) => {
+    if(data.user){
+      const result = await checkFirebaseIdExist(data.user.email)
+      if(!result){
+
+        insertFirbaseUserInfo(data,"google")
+      } else {
+
+      }  
+    }
+  }
+  const handleGoogleLogin = async() => {
       const provider = new GoogleAuthProvider(); // provider를 구글로 설정
       signInWithPopup(auth, provider) // popup을 이용한 signup
         .then((data) => {
-          setUserData(data.user); // user data 설정
-          console.log(data) // console로 들어온 데이터 표시
+          setUserData(data.user); // user data 설정  
+          registUserData(data)
         })
         .catch((err) => {
             console.log(err);
         });
+        console.log("###")
+        
   }
   
     return(
