@@ -5,17 +5,39 @@ export const userSlice = createSlice({
     initialState:{
         id:'',
         advantureGroup:'',
+        accessToken:'',
+        imgUrl:'',
+        provider:'',
     },
     reducers:{
-        registNowUser: (state,action) => {
+        signedDuntemUser: (state,action) => {
             state.advantureGroup = action.payload.advantureGroup;
             state.id = action.payload.id;
+            state.accessToken = ''
+            state.imgUrl = '';
+            state.provider = "duntem";
+        },
+        signedGoogleUser: (state,action) => {
+          console.log("payload",action.payload)
+          state.id = action.payload.id;
+          state.advantureGroup = action.payload.advantureGroup;
+          state.accessToken = action.payload.accessToken;
+          state.imgUrl = action.payload.imgUrl;
+          state.provider = action.payload.provider;
         },
         updateFireBaseAdvantureGroup: (state,action) => {
             state.advantureGroup = action.payload.advantureGroup
+        },
+        clearUserData:(state,action) => {
+            state = userSlice.getInitialState()
         }
     }
 })
-export const { registNowUser,updateFireBaseAdvantureGroup} = userSlice.actions
+export const { 
+    signedDuntemUser,
+    updateFireBaseAdvantureGroup,
+    signedGoogleUser,
+    clearUserData
+} = userSlice.actions
 
 export default userSlice.reducer

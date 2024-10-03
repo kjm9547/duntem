@@ -1,10 +1,11 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import {query,collection,getDocs,where} from 'firebase/firestore'
 import { firebaseInitailizer } from "../../../firebase"
 import { useNavigate } from "react-router-dom"
 import { useDispatch } from "react-redux"
-import { registNowUser } from "../../../redux/reducer/userSlice"
+import { signedDuntemUser } from "../../../redux/reducer/userSlice"
+import { useLocalStore } from "../../../hooks/useLocalStore"
 const Container = styled.div`
     display: flex;
     width: 100vw;
@@ -56,7 +57,7 @@ export const SignInPage = () => {
     const dispatch = useDispatch()
 
     const {db}=firebaseInitailizer()
-
+    const {addUserDataToStorage} = useLocalStore()
     const onClickSignInbutton = async() => {
         const q = query(
             collection(db,"users"),
@@ -66,7 +67,8 @@ export const SignInPage = () => {
         const data = await getDocs(q)
         data.forEach((doc)=>{
             console.log('sign',doc.data())
-            dispatch(registNowUser(doc.data()))
+            dispatch(signedDuntemUser(doc.data()))
+            addUserDataToStorage(doc.data().id,doc.data().provider)
             if(doc.data().advantureGroup !== ''){
                 nav('/main')
             } else {
@@ -74,6 +76,9 @@ export const SignInPage = () => {
             }
         }) 
     }
+    useEffect(()=>{
+        console.log("////")
+    },[])
     return(
         <Container>
             <div 

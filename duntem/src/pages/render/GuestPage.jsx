@@ -2,6 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { GoogleAuthButton } from '../../auth/component/GoogleAuthButton'
 import styled from 'styled-components'
 import { DuntemAuthButton } from '../../auth/component/DuntemAuthButton'
+import { useLocalStore } from '../../hooks/useLocalStore'
+import { useSignFb } from '../../hooks/useSignFb'
+import { useDispatch } from 'react-redux'
+import { signedDuntemUser, signedGoogleUser } from '../../redux/reducer/userSlice'
+import { useNavigate } from 'react-router-dom'
 
 const Container = styled.div`
     display: flex;
@@ -25,6 +30,7 @@ const TitleContainer = styled.div`
     justify-content: center;
     flex: 0.2;
     height: 30vh;
+    
 `
 const SignButtonContainer = styled.div`
     display: flex;
@@ -33,6 +39,53 @@ const SignButtonContainer = styled.div`
     height: 70vh;
 `
 export const GuestPage = () => {
+    const {
+        isLoginedUserToStorage,
+        getLoginedUserProvider,
+        getLoginedUserID
+    } = useLocalStore()
+    const {getCurrnetAuthData,getFirebaseUserData} = useSignFb()
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    
+    useEffect(()=>{
+        if(isLoginedUserToStorage()){
+            try{
+                if(getLoginedUserProvider() === "google"){
+                    const data = getCurrnetAuthData()
+                getFirebaseUserData(data[0].email).
+                then((res) => {
+                    res.forEach(
+                        (doc) => {
+                            dispatch(signedGoogleUser(doc.data()))
+                            navigate("/main")
+                        }
+                    )
+                })
+                } else if (getLoginedUserProvider() === "duntem"){
+                    getFirebaseUserData(getLoginedUserID()).
+                    then((res) => {
+                        res.forEach(
+                            (doc) => {
+                                dispatch(signedDuntemUser(doc.data()))
+                                navigate("/main")
+                            }
+                        )
+                    })
+                    console.log("던템 로그인 유저입니다.")
+                }
+                
+            } catch (err) {
+                console.log( err )
+            }
+            
+            
+            console.log("저장된 기록이 존재합니다..")
+        } else {
+            
+            console.log("저장된 기록이 없습니다.")
+        }
+    },[])
     return(
         <Container>
         <div 
