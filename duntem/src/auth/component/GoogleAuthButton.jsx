@@ -1,10 +1,14 @@
 
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithPopup, GoogleAuthProvider, } from "firebase/auth";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import styled from "styled-components";
 import { firebaseInitailizer } from "../../firebase"; 
 import { useEffect, useState } from "react";
 import { useSignFb } from "../../hooks/useSignFb";
+import { useLocalStore } from "../../hooks/useLocalStore";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { signedGoogleUser } from "../../redux/reducer/userSlice";
 
 const IconButton = styled.button`
   display:flex;
@@ -22,19 +26,37 @@ const IconLogo = styled.img`
 `
 export const GoogleAuthButton = () => {
   const {auth} = firebaseInitailizer()
-  const [userData,setUserData] = useState()
+  
+  const dispatch = useDispatch()
   const {
     checkFirebaseIdExist,
-    insertFirbaseUserInfo} = useSignFb()
+    insertFirbaseUserInfo,
+    getFirebaseUserData
+  } = useSignFb()
 
+  const {
+    addUserDataToStorage,
+  } = useLocalStore()
+  const navigate = useNavigate()
   const registUserData = async(data) => {
     if(data.user){
       const result = await checkFirebaseIdExist(data.user.email)
       if(!result){
-
         insertFirbaseUserInfo(data,"google")
       } else {
-
+        const userData = await getFirebaseUserData(data.user.email)
+        
+        userData.forEach((doc)=>{
+          addUserDataToStorage(
+            doc.data().id,
+            doc.data().provider)  
+          dispatch(
+            signedGoogleUser(doc.data())
+          )
+          if(doc.data().advantureGroup){
+            return true;
+          } else return false
+        })
       }  
     }
   }
@@ -42,14 +64,20 @@ export const GoogleAuthButton = () => {
       const provider = new GoogleAuthProvider(); // provider를 구글로 설정
       signInWithPopup(auth, provider) // popup을 이용한 signup
         .then((data) => {
-          setUserData(data.user); // user data 설정  
-          registUserData(data)
+          registUserData(data).then((res)=>{
+            if(res){
+              navigate('/main')
+          } else {
+              navigate('/regist/AdvantureInfo')
+          }
+            
+          })
+          
+          
         })
         .catch((err) => {
-            console.log(err);
+            console.log("errr",err);
         });
-        console.log("###")
-        
   }
   
     return(

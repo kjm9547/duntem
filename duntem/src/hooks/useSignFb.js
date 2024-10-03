@@ -5,6 +5,7 @@ import {
     where,
     getDocs} from 'firebase/firestore'
 import { firebaseInitailizer } from "../firebase"
+import { useLocalStore } from './useLocalStore'
 
 export const useSignFb = () => {
     
@@ -12,14 +13,16 @@ export const useSignFb = () => {
         db,
         auth
     } = firebaseInitailizer()
-
+    const {
+        
+    } = useLocalStore()
     const checkFirebaseIdExist = async (id) => {
+        
         const q = query(
             collection(db,"users"),
             where("id", "==", id)
         );
         const querySnapshot = await getDocs(q);
-        console.log("www")
         // ID가 존재하면 true, 존재하지 않으면 false 반환
         return !querySnapshot.empty
     }
@@ -36,8 +39,26 @@ export const useSignFb = () => {
             )
             console.log("Document written with ID: ", docRef.id);
     }
+    const getFirebaseUserData = async (id) => {
+        
+            const q = query(
+                collection(db,"users"),
+                where("id", "==", id)
+            );
+            const querySnapshot = await getDocs(q);
+            return querySnapshot
+    }
+    const getCurrnetAuthData = () => {
+        const user = auth.currentUser;
+        if (user !== null) {
+        return user.providerData
+        }
+    }
+    
     return{ 
         checkFirebaseIdExist,
-        insertFirbaseUserInfo
+        insertFirbaseUserInfo,
+        getCurrnetAuthData,
+        getFirebaseUserData
     }
 }

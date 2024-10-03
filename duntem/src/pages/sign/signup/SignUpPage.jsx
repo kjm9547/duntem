@@ -82,7 +82,9 @@ async function checkIfIdExists(id) {
                 const docRef = await addDoc(collection(db, "users"), {
                     id: userInputIdText,
                     pw: userInputPwText,
-                    advantureGroup:""
+                    advantureGroup:"",
+                    provider:"duntem",
+                    imgUrl:''
                   })
                   console.log("Document written with ID: ", docRef.id);
             }
