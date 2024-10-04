@@ -31,12 +31,14 @@ const TitleContainer = styled.div`
     flex: 0.2;
     height: 30vh;
     
+    
 `
 const SignButtonContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
     height: 70vh;
+    color:black;
 `
 export const GuestPage = () => {
     const {
