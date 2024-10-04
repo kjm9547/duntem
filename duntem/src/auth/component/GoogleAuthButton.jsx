@@ -17,7 +17,7 @@ const IconButton = styled.button`
   height: 70px;
   margin-bottom: 10px;
   border: 0.2px solid #A2A2B6;
-  color: white;
+ 
 `
 const IconLogo = styled.img`
   width: 20px;

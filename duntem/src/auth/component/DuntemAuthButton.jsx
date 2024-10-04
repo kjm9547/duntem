@@ -8,7 +8,6 @@ const IconButton = styled.button`
   height: 70px;
   margin-bottom: 10px;
   border: 0.2px solid #A2A2B6;
-  color: white;
 `
 const IconLogo = styled.img`
   width: 20px;
@@ -23,8 +22,9 @@ export const DuntemAuthButton = () => {
     return(
         <IconButton 
           onClick={()=>{onClickDuntemButton()}}>
-          <IconLogo src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA" alt="G"></IconLogo>
-          <p>던템을 통한 로그인</p>
+            
+          {/* <IconLogo src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA" alt="G"></IconLogo> */}
+          <p>D  던템을 통한 로그인</p>
           </IconButton>
     )
 }

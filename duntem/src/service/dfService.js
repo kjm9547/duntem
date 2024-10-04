@@ -2,8 +2,9 @@ import axios from "axios"
 export const dfService = () => {
     const apiKey = 'qPMao1ttAOaA6bVsnpbZS242s4KvtWo2'
     const getCharacterInfo = async (name) => {
-        console.log(name)
-        const path = `http://localhost:5001/duntem/us-central1/api/neople/${name}`;
+        
+        const path = import.meta.env.VITE_API_URL+name;
+        console.log(path)
         try{
         const res = await axios.get(path,{
             headers: {
