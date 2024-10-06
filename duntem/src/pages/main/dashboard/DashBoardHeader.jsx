@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import styled from "styled-components"
 import { ModalAddCharactorView } from "./ModalAddCharactorView"
@@ -38,25 +38,29 @@ const BackgroundFilmView = styled.div`
     position: absolute;
     width: 100vw;
     height: 100vh;
-    background-color: black;
+    background-color: rgba(0,0,0,0.6);
     left: 0;
     top: 0;
-    opacity: 0.6;
-    display: flex;
     
+    display: flex;
     justify-content: center;
     align-items: center;
 `
 export const DashBoardHeader = ({userData}) => {
-    const [isVisibleAddDataVie,setIsVisibleAddDataVie] = useState(false)
+    const [isVisibleAddDataView,setIsVisibleAddDataView] = useState(false)
+ 
     const onClickAddCharactorButton = () => {
-        setIsVisibleAddDataVie(true)
+        setIsVisibleAddDataView(true)
     }
     const onClickfilmView = (e) => {
         if(e.target.classList.contains("filmView")){
-            setIsVisibleAddDataVie(false)
+            setIsVisibleAddDataView(false)
         }
     }
+    const handelisVisibleAddDataView = (v) => {
+        setIsVisibleAddDataView(v)
+    }
+
     return(
         <Container>
             <TextTitleContainer>
@@ -76,11 +80,12 @@ export const DashBoardHeader = ({userData}) => {
                     편집하기
                 </EditCharactorDataBtn>
             </EditCharactorDataBtnContainer>
-            {isVisibleAddDataVie?
+            {isVisibleAddDataView?
                 <BackgroundFilmView 
                     className="filmView"
                     onClick={(e)=>{onClickfilmView(e)}}>
-                    <ModalAddCharactorView/>
+                    <ModalAddCharactorView 
+                        handelisVisibleAddDataView={handelisVisibleAddDataView}/>
                 </BackgroundFilmView>:null}
         </Container>
     )

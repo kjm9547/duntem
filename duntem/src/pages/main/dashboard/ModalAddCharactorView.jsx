@@ -1,8 +1,10 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import styled from "styled-components"
 import { dfService } from "../../../service/dfService"
 import FadeLoader from "react-spinners/FadeLoader"
 import { dfServerName } from "../../../data/dfServerName"
+import { useDispatch } from "react-redux"
+import { setClickedCharacterData } from "../../../redux/reducer/dfCharacterSlice"
 const Container = styled.div`
     display: flex;
     background-color: white;
@@ -14,6 +16,7 @@ const Container = styled.div`
     border-radius: 10px;
     color:black;
     position: relative;
+    z-index: 1;
 `
 const SearchBoxContainer = styled.div`
     display: flex;
@@ -47,14 +50,7 @@ const SearchResultContainer = styled.div`
     overflow-y: auto;
     scroll-padding-top: 25px; 
 `
-const SearchResultUserInfoContainer = styled.div`
-    
-    text-align: center;
-    width: 90%;
-    border-bottom:1px solid #A5A5A5;
-    display: flex;
-    flex-direction: row;
-`
+
 const SearchResultUserInfoHeader = styled.div`
     background-color: #5A5AFD;
     height:30px;
@@ -63,36 +59,80 @@ const SearchResultUserInfoHeader = styled.div`
     padding-left:calc(500px*0.1);
     align-items: center;
     
+    
 `
-const UserInfoText = styled.p`
+const SearchResultUserInfoContainer = styled.div`
+    
+    text-align: center;
+    width: 100%;
+    border-bottom:1px solid #A5A5A5;
     display: flex;
-    width: 33%;
+    flex-direction: row;
+    padding-left:calc(500px*0.1);
+    background-color: ${props => props.clicked?'#A3A3A3':null};
+`
+const UserInfoText = styled.div`
+    display: flex;
+    height: 30px;
+    width: ${props => props.width };
+    /* border-right: 1px solid #A5A5A5; */
+    padding-left:5px;
+    
 `
 const FloatingActionButtonContinaer = styled.button`
     position: absolute;
     bottom: 10px;
-    background: red;
+
+    
 `
 const FloatingActionButton = styled.button`
     
     
 `
-export const ModalAddCharactorView = () => {
+export const ModalAddCharactorView = ({handelisVisibleAddDataView}) => {
     const [text,setText] = useState()
     const [searchResultData,setSearchResultData] = useState([])
     const [isLoadedApiData,setIsLoadedApiData] = useState(false)
-
+    
     const {getCharacterInfo} = dfService()
     const {transferServerName} = dfServerName()
+
+    const dispatch = useDispatch()
     const onClickSearchButton = () => {
         setIsLoadedApiData(true)
         getCharacterInfo(text).then((res)=>{
             if(res){
                 console.log(res)
-                setSearchResultData(res.rows)
+                const newArray = []
+                res.rows.map((value,index) => {
+                    newArray.push({
+                        id:index,
+                        data:value,
+                        clicked:false
+                    })
+                })
+                console.log(res)
+                setSearchResultData(newArray)
                 setIsLoadedApiData(false)
             }
         })        
+    }
+    const onClickUserResUltData = (id) => {
+        searchResultData.find((value,index)=>{
+            value.clicked && 
+            id != index?
+            searchResultData[index].clicked =!searchResultData[index].clicked
+            : null
+        })
+        searchResultData[id].clicked = !searchResultData[id].clicked
+        const newArray = [...searchResultData];
+        setSearchResultData(newArray)
+    }
+
+    const onClickAddDataButton = () => {
+        const data = searchResultData.find((v)=> v.clicked)
+        dispatch(setClickedCharacterData(data.data))
+        handelisVisibleAddDataView(false)
     }
     const NullDataView = () =>{
         console.log("..ss..")
@@ -102,6 +142,7 @@ export const ModalAddCharactorView = () => {
             </div>
         )
     }
+    const [test,setTest] = useState(false)
     return(
         <Container className="ModalView">
             <SearchBoxContainer>
@@ -122,17 +163,29 @@ export const ModalAddCharactorView = () => {
                     searchResultData?(
                         <>
                         <SearchResultUserInfoHeader>
-                            <UserInfoText>서버이름</UserInfoText>
-                            <UserInfoText>직업 </UserInfoText>
-                            <UserInfoText>닉네임</UserInfoText>
+                            <UserInfoText width={'15%'}>서버이름</UserInfoText>
+                            <UserInfoText width={'35%'}>직업 </UserInfoText>
+                            <UserInfoText width={'40%'}>닉네임</UserInfoText>
                         </SearchResultUserInfoHeader>
                         {searchResultData.map((value,index)=>{
                             return(
                                 <SearchResultUserInfoContainer 
-                                    key={value.characterId}>
-                                    <UserInfoText>{transferServerName(value.serverId)}</UserInfoText>
-                                    <UserInfoText>{value.jobGrowName}</UserInfoText>
-                                    <UserInfoText>{value.characterName}</UserInfoText>
+                                    key={value.characterId}
+                                    onClick={()=>{onClickUserResUltData(index)}}
+                                    clicked={value.clicked}
+                                    >
+                                    <UserInfoText 
+                                        width={'15%'}
+                                        
+                                        >{transferServerName(value.data.serverId)}</UserInfoText>
+                                    <UserInfoText 
+                                        width={'35%'}
+                                        >
+                                        {value.data.jobGrowName}</UserInfoText>
+                                    <UserInfoText 
+                                        width={'40%'}
+                                        
+                                        >{value.data.characterName}</UserInfoText>
                                 </SearchResultUserInfoContainer>
                             )
                         })}
@@ -141,7 +194,8 @@ export const ModalAddCharactorView = () => {
                 }
             </SearchResultContainer>
             <FloatingActionButtonContinaer>
-                <FloatingActionButton>
+                <FloatingActionButton
+                    onClick={()=>{onClickAddDataButton()}}>
                     추가하기
                 </FloatingActionButton>
                 <FloatingActionButton>
