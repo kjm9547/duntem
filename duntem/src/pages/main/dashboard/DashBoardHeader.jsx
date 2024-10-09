@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import styled from "styled-components"
 import { ModalAddCharactorView } from "./ModalAddCharactorView"
@@ -6,6 +6,8 @@ import { ModalAddCharactorView } from "./ModalAddCharactorView"
 const Container = styled.div`
     height: 75px;
     display: flex;
+    border-bottom:1px solid black ;
+
     
 `
 const TextTitleContainer = styled.div`
@@ -22,11 +24,11 @@ const EditCharactorDataBtnContainer = styled.div`
     width: 500px;
     align-items: center;
     justify-content: center;
-    border:1px solid black;
+    /* border:1px solid black; */
     
 `
 const EditCharactorDataBtn = styled.button`
-    border:1px solid blue;
+    /* border:1px solid blue; */
     margin-right: 10px;
     background-color: #5A5AFD;
     color: white;
@@ -37,24 +39,26 @@ const TempBoardHeader = styled.div`
 const BackgroundFilmView = styled.div`
     position: absolute;
     width: 100vw;
-    height: 100vh;
-    background-color: black;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
     left: 0;
     top: 0;
-    opacity: 0.6;
-    display: flex;
     
+    display: flex;
     justify-content: center;
     align-items: center;
+    
 `
-export const DashBoardHeader = ({userData}) => {
-    const [isVisibleAddDataVie,setIsVisibleAddDataVie] = useState(false)
+export const DashBoardHeader = ({
+    isVisibleAddDataView,
+    handleisVisibleAddDataView,
+    userData}) => {
     const onClickAddCharactorButton = () => {
-        setIsVisibleAddDataVie(true)
+        handleisVisibleAddDataView(true)
     }
     const onClickfilmView = (e) => {
         if(e.target.classList.contains("filmView")){
-            setIsVisibleAddDataVie(false)
+            handleisVisibleAddDataView(false)
         }
     }
     return(
@@ -76,11 +80,12 @@ export const DashBoardHeader = ({userData}) => {
                     편집하기
                 </EditCharactorDataBtn>
             </EditCharactorDataBtnContainer>
-            {isVisibleAddDataVie?
+            {isVisibleAddDataView?
                 <BackgroundFilmView 
                     className="filmView"
                     onClick={(e)=>{onClickfilmView(e)}}>
-                    <ModalAddCharactorView/>
+                    <ModalAddCharactorView 
+                        handleisVisibleAddDataView={handleisVisibleAddDataView}/>
                 </BackgroundFilmView>:null}
         </Container>
     )
