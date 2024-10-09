@@ -6,6 +6,8 @@ import { ModalAddCharactorView } from "./ModalAddCharactorView"
 const Container = styled.div`
     height: 75px;
     display: flex;
+    border-bottom:1px solid black ;
+
     
 `
 const TextTitleContainer = styled.div`
@@ -22,11 +24,11 @@ const EditCharactorDataBtnContainer = styled.div`
     width: 500px;
     align-items: center;
     justify-content: center;
-    border:1px solid black;
+    /* border:1px solid black; */
     
 `
 const EditCharactorDataBtn = styled.button`
-    border:1px solid blue;
+    /* border:1px solid blue; */
     margin-right: 10px;
     background-color: #5A5AFD;
     color: white;
@@ -37,7 +39,7 @@ const TempBoardHeader = styled.div`
 const BackgroundFilmView = styled.div`
     position: absolute;
     width: 100vw;
-    height: 100vh;
+    height: 100%;
     background-color: rgba(0,0,0,0.6);
     left: 0;
     top: 0;
@@ -45,22 +47,20 @@ const BackgroundFilmView = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    
 `
-export const DashBoardHeader = ({userData}) => {
-    const [isVisibleAddDataView,setIsVisibleAddDataView] = useState(false)
- 
+export const DashBoardHeader = ({
+    isVisibleAddDataView,
+    handleisVisibleAddDataView,
+    userData}) => {
     const onClickAddCharactorButton = () => {
-        setIsVisibleAddDataView(true)
+        handleisVisibleAddDataView(true)
     }
     const onClickfilmView = (e) => {
         if(e.target.classList.contains("filmView")){
-            setIsVisibleAddDataView(false)
+            handleisVisibleAddDataView(false)
         }
     }
-    const handelisVisibleAddDataView = (v) => {
-        setIsVisibleAddDataView(v)
-    }
-
     return(
         <Container>
             <TextTitleContainer>
@@ -85,7 +85,7 @@ export const DashBoardHeader = ({userData}) => {
                     className="filmView"
                     onClick={(e)=>{onClickfilmView(e)}}>
                     <ModalAddCharactorView 
-                        handelisVisibleAddDataView={handelisVisibleAddDataView}/>
+                        handleisVisibleAddDataView={handleisVisibleAddDataView}/>
                 </BackgroundFilmView>:null}
         </Container>
     )

@@ -3,8 +3,9 @@ import styled from "styled-components"
 import { dfService } from "../../../service/dfService"
 import FadeLoader from "react-spinners/FadeLoader"
 import { dfServerName } from "../../../data/dfServerName"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { setClickedCharacterData } from "../../../redux/reducer/dfCharacterSlice"
+import { characterService } from "../../../service/characterService"
 const Container = styled.div`
     display: flex;
     background-color: white;
@@ -73,10 +74,10 @@ const SearchResultUserInfoContainer = styled.div`
 `
 const UserInfoText = styled.div`
     display: flex;
-    height: 30px;
+    height: 45px;
     width: ${props => props.width };
-    /* border-right: 1px solid #A5A5A5; */
     padding-left:5px;
+    align-items: center;
     
 `
 const FloatingActionButtonContinaer = styled.button`
@@ -89,7 +90,9 @@ const FloatingActionButton = styled.button`
     
     
 `
-export const ModalAddCharactorView = ({handelisVisibleAddDataView}) => {
+export const ModalAddCharactorView = ({handleisVisibleAddDataView}) => {
+    const {addCharacterDataToFirebase} = characterService()
+    
     const [text,setText] = useState()
     const [searchResultData,setSearchResultData] = useState([])
     const [isLoadedApiData,setIsLoadedApiData] = useState(false)
@@ -98,6 +101,8 @@ export const ModalAddCharactorView = ({handelisVisibleAddDataView}) => {
     const {transferServerName} = dfServerName()
 
     const dispatch = useDispatch()
+    const user = useSelector((state)=>state.user)
+
     const onClickSearchButton = () => {
         setIsLoadedApiData(true)
         getCharacterInfo(text).then((res)=>{
@@ -117,14 +122,14 @@ export const ModalAddCharactorView = ({handelisVisibleAddDataView}) => {
             }
         })        
     }
-    const onClickUserResUltData = (id) => {
+    const onClickUserResultData = (i) => {
         searchResultData.find((value,index)=>{
             value.clicked && 
-            id != index?
+            i != index?
             searchResultData[index].clicked =!searchResultData[index].clicked
             : null
         })
-        searchResultData[id].clicked = !searchResultData[id].clicked
+        searchResultData[i].clicked = !searchResultData[i].clicked
         const newArray = [...searchResultData];
         setSearchResultData(newArray)
     }
@@ -132,20 +137,26 @@ export const ModalAddCharactorView = ({handelisVisibleAddDataView}) => {
     const onClickAddDataButton = () => {
         const data = searchResultData.find((v)=> v.clicked)
         dispatch(setClickedCharacterData(data.data))
-        handelisVisibleAddDataView(false)
+        addCharacterDataToFirebase(user,data.data)
+        handleisVisibleAddDataView(false)
     }
     const NullDataView = () =>{
-        console.log("..ss..")
         return(
             <div>
                 캐릭터명을 입력 해주세요.
             </div>
         )
     }
-    const [test,setTest] = useState(false)
     return(
         <Container className="ModalView">
-            <SearchBoxContainer>
+            <SearchBoxContainer
+             onKeyDown={(e)=>{
+                console.log("???QQQ")
+                if(e.key == "Enter"){
+                    
+                    onClickSearchButton()
+                }
+            }}>
                 <SearchInputBox
                  type="text"
                     value={text}
@@ -154,8 +165,8 @@ export const ModalAddCharactorView = ({handelisVisibleAddDataView}) => {
                         console.log(e.target.value)
                         setText(e.target.value)}}
                 />
-                <SearchSubmitButton
-                onClick={()=>{onClickSearchButton()}}>검색</SearchSubmitButton>
+                <SearchSubmitButton     
+                    onClick={()=>{onClickSearchButton()}}>검색</SearchSubmitButton>
             </SearchBoxContainer>
             <SearchResultContainer>
                 {isLoadedApiData?
@@ -171,7 +182,7 @@ export const ModalAddCharactorView = ({handelisVisibleAddDataView}) => {
                             return(
                                 <SearchResultUserInfoContainer 
                                     key={value.characterId}
-                                    onClick={()=>{onClickUserResUltData(index)}}
+                                    onClick={()=>{onClickUserResultData(index)}}
                                     clicked={value.clicked}
                                     >
                                     <UserInfoText 
