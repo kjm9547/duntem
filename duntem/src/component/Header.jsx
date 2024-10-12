@@ -5,10 +5,16 @@ const Container = styled.div`
     height: 75px;
     display: flex;
     flex-direction: row;
+    justify-content: center;
+    margin-left: 200px;
+    margin-right:200px;
+    
+
 `
 const TextTitleContainer = styled.div`
     width: 200px;
     align-content: center;
+    justify-content: center;
 `
 const TextTitle = styled.div`
     font-size: 44px;
@@ -35,12 +41,12 @@ export const Header = () => {
     return(
         <Container>
             <TextTitleContainer>
-                <TextTitle>던템</TextTitle>
+                <TextTitle>D 던템</TextTitle>
             </TextTitleContainer>
-            <TempHeaderBar/>
-            <ImageTitleContainer>
+            
+            {/* <ImageTitleContainer>
                 <UserImageProfile/>
-            </ImageTitleContainer>
+            </ImageTitleContainer> */}
         </Container>
     )
 }
