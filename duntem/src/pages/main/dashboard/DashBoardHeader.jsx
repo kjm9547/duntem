@@ -4,15 +4,17 @@ import styled from "styled-components"
 import { ModalAddCharactorView } from "./ModalAddCharactorView"
 
 const Container = styled.div`
-    height: 75px;
     display: flex;
-    border-bottom:1px solid black ;
-
+    height: 175px;
     
+    /* border: 1px solid black; */
+    /* padding-left: 200px;
+    padding-right: 200px; */
 `
 const TextTitleContainer = styled.div`
     width: 200px;
     align-content: center;
+    padding-left:225px;
 `
 const TextTitle = styled.div`
     font-size: 28px;
@@ -50,7 +52,7 @@ const BackgroundFilmView = styled.div`
     
 `
 export const DashBoardHeader = ({
-    isVisibleAddDataView,
+    getIsVisibleAddDataView,
     handleisVisibleAddDataView,
     userData}) => {
     const onClickAddCharactorButton = () => {
@@ -80,11 +82,12 @@ export const DashBoardHeader = ({
                     편집하기
                 </EditCharactorDataBtn>
             </EditCharactorDataBtnContainer>
-            {isVisibleAddDataView?
+            {getIsVisibleAddDataView()?
                 <BackgroundFilmView 
                     className="filmView"
                     onClick={(e)=>{onClickfilmView(e)}}>
                     <ModalAddCharactorView 
+                    getIsVisibleAddDataView={getIsVisibleAddDataView}
                         handleisVisibleAddDataView={handleisVisibleAddDataView}/>
                 </BackgroundFilmView>:null}
         </Container>

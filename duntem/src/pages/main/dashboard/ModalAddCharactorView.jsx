@@ -6,6 +6,7 @@ import { dfServerName } from "../../../data/dfServerName"
 import { useDispatch, useSelector } from "react-redux"
 import { setClickedCharacterData } from "../../../redux/reducer/dfCharacterSlice"
 import { characterService } from "../../../service/characterService"
+import { addCharacterToList } from "../../../redux/reducer/dfCharacterListSlice"
 const Container = styled.div`
     display: flex;
     background-color: white;
@@ -18,6 +19,7 @@ const Container = styled.div`
     color:black;
     position: relative;
     z-index: 1;
+    
 `
 const SearchBoxContainer = styled.div`
     display: flex;
@@ -70,7 +72,7 @@ const SearchResultUserInfoContainer = styled.div`
     display: flex;
     flex-direction: row;
     padding-left:calc(500px*0.1);
-    background-color: ${props => props.clicked?'#A3A3A3':null};
+    background-color: ${(props) => props.$clicked?'#A3A3A3':null};
 `
 const UserInfoText = styled.div`
     display: flex;
@@ -80,29 +82,47 @@ const UserInfoText = styled.div`
     align-items: center;
     
 `
-const FloatingActionButtonContinaer = styled.button`
+const FloatingActionButtonContinaer = styled.div`
     position: absolute;
-    bottom: 10px;
-
+    bottom: 20px;
+    width: 100%;
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+`
+const FloatingActionButton = styled.div`
+    align-content: center;
+    text-align: center;
+    border-radius: 10px;
+    margin-right: 15px;
+    width: 100px;
+    height: 45px;
+    background-color: ${(props) => props.$addButtonActive?'#5A5AFD':'#D9D9D9'};
+    border:0.4px solid #D8D8D8;
     
 `
-const FloatingActionButton = styled.button`
-    
-    
-`
-export const ModalAddCharactorView = ({handleisVisibleAddDataView}) => {
+export const ModalAddCharactorView = ({
+    handleisVisibleAddDataView,
+    getIsVisibleAddDataView}) => {
     const {addCharacterDataToFirebase} = characterService()
     
     const [text,setText] = useState()
     const [searchResultData,setSearchResultData] = useState([])
     const [isLoadedApiData,setIsLoadedApiData] = useState(false)
-    
+    const [addButtonActive,setAddButtonActive] = useState(false)
+
     const {getCharacterInfo} = dfService()
     const {transferServerName} = dfServerName()
 
     const dispatch = useDispatch()
     const user = useSelector((state)=>state.user)
 
+    useEffect(()=>{
+        document.body.style.overflow = 'hidden';
+        return()=>{
+            document.body.style.overflow = 'unset';
+        }
+    },[])
     const onClickSearchButton = () => {
         setIsLoadedApiData(true)
         getCharacterInfo(text).then((res)=>{
@@ -130,13 +150,17 @@ export const ModalAddCharactorView = ({handleisVisibleAddDataView}) => {
             : null
         })
         searchResultData[i].clicked = !searchResultData[i].clicked
+        if(searchResultData[i].clicked) setAddButtonActive(true)
+        else setAddButtonActive(false)
         const newArray = [...searchResultData];
         setSearchResultData(newArray)
     }
 
     const onClickAddDataButton = () => {
         const data = searchResultData.find((v)=> v.clicked)
+       
         dispatch(setClickedCharacterData(data.data))
+        dispatch(addCharacterToList(data.data))
         addCharacterDataToFirebase(user,data.data)
         handleisVisibleAddDataView(false)
     }
@@ -148,25 +172,27 @@ export const ModalAddCharactorView = ({handleisVisibleAddDataView}) => {
         )
     }
     return(
-        <Container className="ModalView">
+        <Container 
+        getIsVisibleAddDataView={getIsVisibleAddDataView}
+        className="ModalView">
             <SearchBoxContainer
              onKeyDown={(e)=>{
-                console.log("???QQQ")
-                if(e.key == "Enter"){
-                    
+                if(e.key == "Enter"){    
                     onClickSearchButton()
-                }
-            }}>
+                }}}>
                 <SearchInputBox
-                 type="text"
+                    type="text"
+                    autoFocus={true}
                     value={text}
                     placeholder="캐릭터명을 입력해주세요."
                     onChange={(e)=>{
                         console.log(e.target.value)
-                        setText(e.target.value)}}
-                />
+                        setText(e.target.value)
+                    }}/>
                 <SearchSubmitButton     
-                    onClick={()=>{onClickSearchButton()}}>검색</SearchSubmitButton>
+                    onClick={()=>{onClickSearchButton()}}>
+                    검색
+                </SearchSubmitButton>
             </SearchBoxContainer>
             <SearchResultContainer>
                 {isLoadedApiData?
@@ -183,20 +209,20 @@ export const ModalAddCharactorView = ({handleisVisibleAddDataView}) => {
                                 <SearchResultUserInfoContainer 
                                     key={value.characterId}
                                     onClick={()=>{onClickUserResultData(index)}}
-                                    clicked={value.clicked}
+                                    $clicked={value.clicked}
                                     >
                                     <UserInfoText 
-                                        width={'15%'}
-                                        
-                                        >{transferServerName(value.data.serverId)}</UserInfoText>
+                                        width={'15%'}>
+                                        {transferServerName(value.data.serverId)}
+                                    </UserInfoText>
                                     <UserInfoText 
-                                        width={'35%'}
-                                        >
-                                        {value.data.jobGrowName}</UserInfoText>
+                                        width={'35%'}>
+                                        {value.data.jobGrowName}
+                                    </UserInfoText>
                                     <UserInfoText 
                                         width={'40%'}
-                                        
-                                        >{value.data.characterName}</UserInfoText>
+                                        >{value.data.characterName}
+                                    </UserInfoText>
                                 </SearchResultUserInfoContainer>
                             )
                         })}
@@ -206,6 +232,7 @@ export const ModalAddCharactorView = ({handleisVisibleAddDataView}) => {
             </SearchResultContainer>
             <FloatingActionButtonContinaer>
                 <FloatingActionButton
+                    $addButtonActive={addButtonActive}
                     onClick={()=>{onClickAddDataButton()}}>
                     추가하기
                 </FloatingActionButton>
