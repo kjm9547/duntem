@@ -44,7 +44,7 @@ const BackgroundFilmView = styled.div`
     height: 100%;
     background-color: rgba(0,0,0,0.6);
     left: 0;
-    top: 0;
+    top: ${(props)=>props.top}px;
     
     display: flex;
     justify-content: center;
@@ -54,10 +54,14 @@ const BackgroundFilmView = styled.div`
 export const DashBoardHeader = ({
     getIsVisibleAddDataView,
     handleisVisibleAddDataView,
+    onClickAddCharactorButton,
+    top,
     userData}) => {
-    const onClickAddCharactorButton = () => {
-        handleisVisibleAddDataView(true)
-    }
+    
+    useEffect(()=>{
+        handleisVisibleAddDataView(false)
+    },[])
+   
     const onClickfilmView = (e) => {
         if(e.target.classList.contains("filmView")){
             handleisVisibleAddDataView(false)
@@ -85,6 +89,7 @@ export const DashBoardHeader = ({
             {getIsVisibleAddDataView()?
                 <BackgroundFilmView 
                     className="filmView"
+                    top={top}
                     onClick={(e)=>{onClickfilmView(e)}}>
                     <ModalAddCharactorView 
                     getIsVisibleAddDataView={getIsVisibleAddDataView}

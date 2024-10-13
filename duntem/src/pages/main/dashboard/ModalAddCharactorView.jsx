@@ -111,7 +111,11 @@ export const ModalAddCharactorView = ({
     const [isLoadedApiData,setIsLoadedApiData] = useState(false)
     const [addButtonActive,setAddButtonActive] = useState(false)
 
-    const {getCharacterInfo} = dfService()
+    const {
+        getCharacterInfo,
+        getCharacterAvatarInfo,
+        getCharacterCreatureInfo,
+        getCharacterSwitchingInfo} = dfService()
     const {transferServerName} = dfServerName()
 
     const dispatch = useDispatch()
@@ -156,12 +160,26 @@ export const ModalAddCharactorView = ({
         setSearchResultData(newArray)
     }
 
-    const onClickAddDataButton = () => {
+    const onClickAddDataButton = async() => {
         const data = searchResultData.find((v)=> v.clicked)
-       
+        console.log(data)
+        console.log(data.data.characterId,data.data.serverId)
+        const avatar = await getCharacterAvatarInfo(data.data.characterId,data.data.serverId)
+        const creature = await getCharacterCreatureInfo(data.data.characterId,data.data.serverId)
+        const skill = await getCharacterSwitchingInfo(data.data.characterId,data.data.serverId)
+
+        // console.log(avatar,creature,skill)
+        data.data.avatar = avatar
+        data.data.creature = creature
+        data.data.skill = skill
+        console.log(data.data)
+        
         dispatch(setClickedCharacterData(data.data))
         dispatch(addCharacterToList(data.data))
         addCharacterDataToFirebase(user,data.data)
+        handleisVisibleAddDataView(false)
+    }
+    const onClickEditButton = () => {
         handleisVisibleAddDataView(false)
     }
     const NullDataView = () =>{
@@ -236,7 +254,8 @@ export const ModalAddCharactorView = ({
                     onClick={()=>{onClickAddDataButton()}}>
                     추가하기
                 </FloatingActionButton>
-                <FloatingActionButton>
+                <FloatingActionButton
+                    onClick={()=>{onClickEditButton()}}>
                     취소
                 </FloatingActionButton>
             </FloatingActionButtonContinaer>

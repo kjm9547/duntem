@@ -19,11 +19,18 @@ export const DashBoardContainder = () => {
     const userData = useSelector(state=>state.user)
     const data =useSelector((state)=>state.dfCharacter)
     const [isVisibleAddDataView,setIsVisibleAddDataView] = useState(true)
+    const [top,setTop] = useState(0)
+
     const handleisVisibleAddDataView = (value) => {
         setIsVisibleAddDataView(value)
     }
     const getIsVisibleAddDataView = () => {
         return isVisibleAddDataView
+    }
+    const onClickAddCharactorButton = () => {
+        setTop(window.scrollY)
+        console.log(top)
+        handleisVisibleAddDataView(true)
     }
     useEffect(()=>{
         console.log("dfcharacter Data",data)
@@ -33,10 +40,15 @@ export const DashBoardContainder = () => {
             
         isVisibleAddDataView={isVisibleAddDataView}>
             <DashBoardHeader
+                top={top}
                 getIsVisibleAddDataView={getIsVisibleAddDataView}
                 handleisVisibleAddDataView={handleisVisibleAddDataView}
+                onClickAddCharactorButton={onClickAddCharactorButton}
                 userData={userData}/>
-            <DashBoardContent/>
+            <DashBoardContent
+                onClickAddCharactorButton={onClickAddCharactorButton}
+                setIsVisibleAddDataView={setIsVisibleAddDataView}
+            />
             <Footer/>
         </Container>
     )

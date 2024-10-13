@@ -7,6 +7,7 @@ import { clearUserData } from "../../../redux/reducer/userSlice"
 import { characterService } from "../../../service/characterService"
 import styled from "styled-components"
 import { setArrayDataToCharacterList } from "../../../redux/reducer/dfCharacterListSlice"
+import { useProcess } from "../../../hooks/useProcess"
 
 const Container = styled.div`
     display: flex;
@@ -30,12 +31,17 @@ const CharacterCard = styled.div`
     display: flex;
     width: 280px;
     box-sizing: border-box;
-    background-color: #D9D9D9;
+    background-color: #F3F3F3;
     padding: 20px;
     border-radius: 8px;
     height: 400px;
     flex-direction: column;
     align-items: center;
+    border: 1px solid #D9D9D9;
+    &:hover{
+        border: 2px solid #5A5AFD;
+        
+    }
 `
 const NullCard = styled.div`
     display: flex;
@@ -53,18 +59,36 @@ const AddCharacterCard = styled.div`
     height: 400px;
     flex-direction: column;
     align-items: center;
+    
+    &:hover{
+        border: 2px solid #5A5AFD;
+        
+    }
+`
+const CardHeaderContainer = styled.div`
+    border: 1px solid black;
+    display: flex;
+    flex: 0.2;
+    width:100%;
 `
 const CardImageContainer = styled.div`
-    
+    border: 1px solid black;
+    display: flex;
+    flex: 0.5;
 `
 const CardTextContainer = styled.div`
+border: 1px solid black;
     display: flex;
     flex-direction: column;
+    flex: 0.3;
 `
 const CardText = styled.div`
     text-align: center;
 `
-export const DashBoardContent = () => {
+export const DashBoardContent = ({
+    setIsVisibleAddDataView,
+    onClickAddCharactorButton
+}) => {
     const userId = useSelector(state=>state.user)
     const [charcaterList,setCharcaterList] = useState([])
     const data =useSelector((state)=>state.dfCharcterList)
@@ -93,8 +117,15 @@ export const DashBoardContent = () => {
     }
      
    },[data])
-   useEffect(()=>{console.log("eqweq")},[])
+   const enterMouseOnCard = (e) => {
+
+   }
    const {getUserAllCharacterData} = characterService()
+   const {
+    isCharacterSetEndAoura,
+    isCharacterSetEndCreature,
+    isCharacterSetFullSwitching,
+    isCharacterSetRareAvatar} = useProcess()
     return(
         <Container>
             <CharacterContainer>
@@ -102,6 +133,13 @@ export const DashBoardContent = () => {
             {charcaterList.map((value,index)=>(
                 (value?
                 <CharacterCard key={value.characterId}>
+                    <CardHeaderContainer>
+                        <div>
+                            <img src="https://img-api.neople.co.kr/df/items/d68b7a9d70e5851de5d0357a157a3882"></img>
+                            아바타 크리쳐 스위칭 오라
+                            <img src ={`https://img-api.neople.co.kr/df/skills/${value.skill.buff.skillInfo.skillId}`}></img>
+                        </div>
+                    </CardHeaderContainer>
                     <CardImageContainer>
                         <img src={`https://img-api.neople.co.kr/df/servers/prey/characters/${value.characterId}?zoom=600x690`}></img>
                     </CardImageContainer>
@@ -111,7 +149,10 @@ export const DashBoardContent = () => {
                        <CardText>{value.jobName}</CardText>
                     </CardTextContainer>
                 </CharacterCard>
-                :(charcaterList[index-1]?<AddCharacterCard>
+                :(charcaterList[index-1]?
+                <AddCharacterCard
+                    onClick={()=>{onClickAddCharactorButton()}}
+                >
                     add
                 </AddCharacterCard>:<NullCard></NullCard>))
             ))}
