@@ -103,7 +103,7 @@ const FloatingActionButton = styled.div`
 `
 export const ModalAddCharactorView = ({
     handleisVisibleAddDataView,
-    getIsVisibleAddDataView}) => {
+    }) => {
     const {addCharacterDataToFirebase} = characterService()
     
     const [text,setText] = useState()
@@ -115,7 +115,9 @@ export const ModalAddCharactorView = ({
         getCharacterInfo,
         getCharacterAvatarInfo,
         getCharacterCreatureInfo,
-        getCharacterSwitchingInfo} = dfService()
+        getCharacterSwitchingInfo,
+        getMultItemDetailInfo
+    } = dfService()
     const {transferServerName} = dfServerName()
 
     const dispatch = useDispatch()
@@ -162,17 +164,21 @@ export const ModalAddCharactorView = ({
 
     const onClickAddDataButton = async() => {
         const data = searchResultData.find((v)=> v.clicked)
-        console.log(data)
-        console.log(data.data.characterId,data.data.serverId)
         const avatar = await getCharacterAvatarInfo(data.data.characterId,data.data.serverId)
         const creature = await getCharacterCreatureInfo(data.data.characterId,data.data.serverId)
         const skill = await getCharacterSwitchingInfo(data.data.characterId,data.data.serverId)
 
-        // console.log(avatar,creature,skill)
+        console.log(avatar,creature,skill)
+
+        const aouraIndex = avatar?.findIndex((v)=> v.slotName === "오라 아바타")
+        if(aouraIndex && creature){
+            const items = creature.itemId+','+avatar[aouraIndex].itemId    
+            const itemData = await getMultItemDetailInfo(items)
+            avatar[aouraIndex].detail = itemData.rows[1]
+            data.data.creature = itemData.rows[0]    
+        }    
         data.data.avatar = avatar
-        data.data.creature = creature
         data.data.skill = skill
-        console.log(data.data)
         
         dispatch(setClickedCharacterData(data.data))
         dispatch(addCharacterToList(data.data))
@@ -191,7 +197,6 @@ export const ModalAddCharactorView = ({
     }
     return(
         <Container 
-        getIsVisibleAddDataView={getIsVisibleAddDataView}
         className="ModalView">
             <SearchBoxContainer
              onKeyDown={(e)=>{

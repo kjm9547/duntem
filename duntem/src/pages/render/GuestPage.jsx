@@ -55,6 +55,7 @@ export const GuestPage = () => {
             try{
                 if(getLoginedUserProvider() === "google"){
                     const data = getCurrnetAuthData()
+                    
                 getFirebaseUserData(data[0].email).
                 then((res) => {
                     res.forEach(

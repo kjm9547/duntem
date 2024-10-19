@@ -7,7 +7,7 @@ const Container = styled.div`
     display: flex;
     height: 175px;
     
-    /* border: 1px solid black; */
+    border-bottom: 1px solid #d9d9d9;
     /* padding-left: 200px;
     padding-right: 200px; */
 `
@@ -52,7 +52,7 @@ const BackgroundFilmView = styled.div`
     
 `
 export const DashBoardHeader = ({
-    getIsVisibleAddDataView,
+    isVisibleAddDataView,
     handleisVisibleAddDataView,
     onClickAddCharactorButton,
     top,
@@ -86,13 +86,12 @@ export const DashBoardHeader = ({
                     편집하기
                 </EditCharactorDataBtn>
             </EditCharactorDataBtnContainer>
-            {getIsVisibleAddDataView()?
+            {isVisibleAddDataView?
                 <BackgroundFilmView 
                     className="filmView"
                     top={top}
                     onClick={(e)=>{onClickfilmView(e)}}>
                     <ModalAddCharactorView 
-                    getIsVisibleAddDataView={getIsVisibleAddDataView}
                         handleisVisibleAddDataView={handleisVisibleAddDataView}/>
                 </BackgroundFilmView>:null}
         </Container>

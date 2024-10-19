@@ -1,20 +1,16 @@
 import { useDispatch, useSelector } from "react-redux"
-import { useNavigate } from "react-router-dom"
-import { useLocalStore } from "../../../hooks/useLocalStore"
 import { useEffect, useState } from "react"
-import { dfService } from "../../../service/dfService"
-import { clearUserData } from "../../../redux/reducer/userSlice"
 import { characterService } from "../../../service/characterService"
 import styled from "styled-components"
 import { setArrayDataToCharacterList } from "../../../redux/reducer/dfCharacterListSlice"
-import { useProcess } from "../../../hooks/useProcess"
+import { endSpecUtil } from "../../../utils/endSpecUtil"
+import { firebaseInitailizer } from "../../../firebase"
+import { itemIconPathList } from "../../../data/itemIconPathList"
 
 const Container = styled.div`
     display: flex;
-    padding-left:50px;
-    padding-right:50px;
     padding-top: 25px;
-    
+    width: 100%;
 `
 const CharacterContainer = styled.div`
     display: flex;
@@ -22,7 +18,7 @@ const CharacterContainer = styled.div`
     flex-wrap: wrap;  /* 줄바꿈 허용 */
     flex-wrap: 4;
     gap: 16px;        /* 카드 사이 간격 */
-    width: 100vw;
+    width: 100%;
     height: 100%;
     padding-left: 2px;
     
@@ -85,13 +81,21 @@ border: 1px solid black;
 const CardText = styled.div`
     text-align: center;
 `
+const ItemIcon = styled.img`
+    border-radius: 5px;
+    margin-left: 3px;
+`
 export const DashBoardContent = ({
-    setIsVisibleAddDataView,
+    handleisVisibleAddDataView,
     onClickAddCharactorButton
 }) => {
     const userId = useSelector(state=>state.user)
     const [charcaterList,setCharcaterList] = useState([])
+    const [isItemEndSpec,setIsItemEndSpec] = useState([])
+    
+    
     const data =useSelector((state)=>state.dfCharcterList)
+
     const dispatch = useDispatch()
    useEffect(()=>{
     getUserAllCharacterData(userId.id).then((res)=>{
@@ -104,40 +108,71 @@ export const DashBoardContent = ({
         setCharcaterList(newArray)
         console.log(newArray)
         dispatch(setArrayDataToCharacterList(newArray))
-        
+        checkCharacterEndSpec(newArray)
     })
-    
    },[])
    useEffect(()=>{
-    console.log("redux data === ",data)
-    console.log(data.rows.length,charcaterList.length)
     if(charcaterList.length > 0 && charcaterList.length != data.rows.length){
-        console.log("data===",data.rows)
         setCharcaterList(data.rows)
     }
      
    },[data])
-   const enterMouseOnCard = (e) => {
-
-   }
+ 
    const {getUserAllCharacterData} = characterService()
    const {
     isCharacterSetEndAoura,
     isCharacterSetEndCreature,
     isCharacterSetFullSwitching,
-    isCharacterSetRareAvatar} = useProcess()
+    isCharacterSetRareAvatar} = endSpecUtil()
+    const {storage,ref,getDownloadURL} = firebaseInitailizer()
+    
+    const checkCharacterEndSpec = (data) => {
+        const newArray = [...isItemEndSpec]
+        data.map((v,i)=>{
+            if(v){
+                newArray.push({
+                    id:data[i].characterName,
+                    isAvatar:isCharacterSetRareAvatar(v.avatar),
+                    isCreature:isCharacterSetEndCreature(v.creature),
+                    isAoura:isCharacterSetEndAoura(v.avatar)
+                })    
+            }
+        })
+
+        setIsItemEndSpec(newArray)
+    }
     return(
         <Container>
             <CharacterContainer>
             {/* https://img-api.neople.co.kr/df/items/<itemId> */}
-            {charcaterList.map((value,index)=>(
+            {charcaterList.map((value,index)=>{
+                return(
                 (value?
                 <CharacterCard key={value.characterId}>
                     <CardHeaderContainer>
                         <div>
-                            <img src="https://img-api.neople.co.kr/df/items/d68b7a9d70e5851de5d0357a157a3882"></img>
+                            <ItemIcon src={
+                                isItemEndSpec[index].isAvatar
+                                ?itemIconPathList.onAvatar
+                                :itemIconPathList.offAvatar
+                                }
+                            />
+                            <ItemIcon src={
+                                isItemEndSpec[index].isAoura
+                                ?itemIconPathList.onAoura
+                                :itemIconPathList.offAoura
+                                }
+                            />
+                            <ItemIcon src={
+                                isItemEndSpec[index].isCreature
+                                ?itemIconPathList.onCreature
+                                :itemIconPathList.offCreature
+                                }
+                            />
+                            {/* <img src={img}></img>
+                            https://img-api.neople.co.kr/df/items/d68b7a9d70e5851de5d0357a157a3882
                             아바타 크리쳐 스위칭 오라
-                            <img src ={`https://img-api.neople.co.kr/df/skills/${value.skill.buff.skillInfo.skillId}`}></img>
+                            <img src ={`https://img-api.neople.co.kr/df/skills/${value.skill.buff.skillInfo.skillId}`}></img> */}
                         </div>
                     </CardHeaderContainer>
                     <CardImageContainer>
@@ -155,7 +190,8 @@ export const DashBoardContent = ({
                 >
                     add
                 </AddCharacterCard>:<NullCard></NullCard>))
-            ))}
+            )}
+            )}
             </CharacterContainer>         
         </Container>
     )
