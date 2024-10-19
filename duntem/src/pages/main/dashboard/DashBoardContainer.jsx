@@ -58,7 +58,7 @@ export const DashBoardContainder = () => {
                     handleisVisibleAddDataView={handleisVisibleAddDataView}
                 />
                 <AdsDisplayContainer>
-                    <AdDisplay/>
+                    {/* <AdDisplay/> */}
                 </AdsDisplayContainer>
             </Content>
             <Footer/>

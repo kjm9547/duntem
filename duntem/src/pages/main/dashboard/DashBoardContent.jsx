@@ -1,11 +1,12 @@
 import { useDispatch, useSelector } from "react-redux"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { characterService } from "../../../service/characterService"
 import styled from "styled-components"
 import { setArrayDataToCharacterList } from "../../../redux/reducer/dfCharacterListSlice"
 import { endSpecUtil } from "../../../utils/endSpecUtil"
 import { firebaseInitailizer } from "../../../firebase"
 import { itemIconPathList } from "../../../data/itemIconPathList"
+import { CharacterDeleteButton } from "./CharacterDeleteButton"
 
 const Container = styled.div`
     display: flex;
@@ -55,25 +56,24 @@ const AddCharacterCard = styled.div`
     height: 400px;
     flex-direction: column;
     align-items: center;
-    
+    ;
     &:hover{
         border: 2px solid #5A5AFD;
         
     }
 `
 const CardHeaderContainer = styled.div`
-    border: 1px solid black;
     display: flex;
     flex: 0.2;
     width:100%;
 `
 const CardImageContainer = styled.div`
-    border: 1px solid black;
     display: flex;
     flex: 0.5;
+    flex-direction: column;
+    height: 100%;    
 `
 const CardTextContainer = styled.div`
-border: 1px solid black;
     display: flex;
     flex-direction: column;
     flex: 0.3;
@@ -86,45 +86,42 @@ const ItemIcon = styled.img`
     margin-left: 3px;
 `
 export const DashBoardContent = ({
-    handleisVisibleAddDataView,
     onClickAddCharactorButton
 }) => {
     const userId = useSelector(state=>state.user)
     const [charcaterList,setCharcaterList] = useState([])
     const [isItemEndSpec,setIsItemEndSpec] = useState([])
-    
-    
+    const nowDraggingItem = useRef(null)
     const data =useSelector((state)=>state.dfCharcterList)
 
     const dispatch = useDispatch()
-   useEffect(()=>{
-    getUserAllCharacterData(userId.id).then((res)=>{
-        
-        let newArray = new Array(res.rows.length)
-        newArray = [...res.rows]
-        for(let i = 0; i< 4-res.rows.length%4; i++){
-            newArray.push(undefined)
-        }
-        setCharcaterList(newArray)
-        console.log(newArray)
-        dispatch(setArrayDataToCharacterList(newArray))
-        checkCharacterEndSpec(newArray)
-    })
+
+    const {getUserAllCharacterData} = characterService()
+    const {
+        isCharacterSetEndAoura,
+        isCharacterSetEndCreature,
+        isCharacterSetFullSwitching,
+        isCharacterSetRareAvatar} = endSpecUtil()
+    useEffect(()=>{
+        getUserAllCharacterData(userId.id)
+        .then((res)=>{
+            let newArray = new Array(res.rows.length)
+                newArray = [...res.rows]
+            for(let i = 0; i< 4-res.rows.length%4; i++){
+                newArray.push(undefined)
+            }
+            setCharcaterList(newArray)
+            dispatch(setArrayDataToCharacterList(newArray))
+            checkCharacterEndSpec(newArray)
+        })
    },[])
    useEffect(()=>{
-    if(charcaterList.length > 0 && charcaterList.length != data.rows.length){
+    if(charcaterList.length > 0
+        && charcaterList.length != data.rows.length){
         setCharcaterList(data.rows)
-    }
-     
+    } 
    },[data])
  
-   const {getUserAllCharacterData} = characterService()
-   const {
-    isCharacterSetEndAoura,
-    isCharacterSetEndCreature,
-    isCharacterSetFullSwitching,
-    isCharacterSetRareAvatar} = endSpecUtil()
-    const {storage,ref,getDownloadURL} = firebaseInitailizer()
     
     const checkCharacterEndSpec = (data) => {
         const newArray = [...isItemEndSpec]
@@ -141,6 +138,21 @@ export const DashBoardContent = ({
 
         setIsItemEndSpec(newArray)
     }
+
+    const handleCharacterCardDragOver = () => {
+
+    }
+    const handleCharacterCardDragStart = (e,v) => {
+        e.stopPropagation()
+        const startItem = v;
+        nowDraggingItem.current = v;
+        console.log(nowDraggingItem)
+    }
+    const handleCharacterCardDrop = (e) => {
+        e.preventDefault()
+        console.log("eqweqw")
+        console.log(e.target)
+    }
     return(
         <Container>
             <CharacterContainer>
@@ -148,9 +160,17 @@ export const DashBoardContent = ({
             {charcaterList.map((value,index)=>{
                 return(
                 (value?
-                <CharacterCard key={value.characterId}>
+                <CharacterCard 
+                    key={value.characterId}
+                    // onDrop
+                    onDragEnd={(e)=>{handleCharacterCardDrop(e)}}
+                    onDragStart={(e)=>{handleCharacterCardDragStart(e,value)}}
+                >
+
+                    <CharacterDeleteButton/>
+                    <CardImageContainer>
                     <CardHeaderContainer>
-                        <div>
+                        
                             <ItemIcon src={
                                 isItemEndSpec[index].isAvatar
                                 ?itemIconPathList.onAvatar
@@ -169,13 +189,14 @@ export const DashBoardContent = ({
                                 :itemIconPathList.offCreature
                                 }
                             />
+                            
                             {/* <img src={img}></img>
                             https://img-api.neople.co.kr/df/items/d68b7a9d70e5851de5d0357a157a3882
                             아바타 크리쳐 스위칭 오라
                             <img src ={`https://img-api.neople.co.kr/df/skills/${value.skill.buff.skillInfo.skillId}`}></img> */}
-                        </div>
+                        
                     </CardHeaderContainer>
-                    <CardImageContainer>
+                    
                         <img src={`https://img-api.neople.co.kr/df/servers/prey/characters/${value.characterId}?zoom=600x690`}></img>
                     </CardImageContainer>
                     <CardTextContainer>
@@ -186,10 +207,11 @@ export const DashBoardContent = ({
                 </CharacterCard>
                 :(charcaterList[index-1]?
                 <AddCharacterCard
+                    key={`addCard`}
                     onClick={()=>{onClickAddCharactorButton()}}
                 >
                     add
-                </AddCharacterCard>:<NullCard></NullCard>))
+                </AddCharacterCard>:<NullCard key={`nullCard`+index}></NullCard>))
             )}
             )}
             </CharacterContainer>         
