@@ -164,10 +164,11 @@ export const ModalAddCharactorView = ({
 
     const onClickAddDataButton = async() => {
         const data = searchResultData.find((v)=> v.clicked)
-        const avatar = await getCharacterAvatarInfo(data.data.characterId,data.data.serverId)
-        const creature = await getCharacterCreatureInfo(data.data.characterId,data.data.serverId)
-        const skill = await getCharacterSwitchingInfo(data.data.characterId,data.data.serverId)
-
+        const [avatar, creature, skill] = await Promise.all([
+           getCharacterAvatarInfo(data.data.characterId,data.data.serverId),
+           getCharacterCreatureInfo(data.data.characterId,data.data.serverId),
+           getCharacterSwitchingInfo(data.data.characterId,data.data.serverId)
+        ])
         console.log(avatar,creature,skill)
 
         const aouraIndex = avatar?.findIndex((v)=> v.slotName === "오라 아바타")

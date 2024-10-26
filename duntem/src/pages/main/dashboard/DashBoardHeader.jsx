@@ -67,6 +67,29 @@ export const DashBoardHeader = ({
             handleisVisibleAddDataView(false)
         }
     }
+    const fetchData = async () => {
+        try {
+          const response = await fetch(
+            "https://api.neople.co.kr/df/servers?apikey=qPMao1ttAOaA6bVsnpbZS242s4KvtWo2",
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+    
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+    
+          const result = await response.json();
+          console.log(result)
+        } catch (err) {
+          
+          console.error(err);
+        }
+      };
     return(
         <Container>
             <TextTitleContainer>
@@ -85,6 +108,11 @@ export const DashBoardHeader = ({
                 <EditCharactorDataBtn>
                     편집하기
                 </EditCharactorDataBtn>
+                <button onClick={()=>{
+                    fetchData()
+                }}>
+                    test
+                </button>
             </EditCharactorDataBtnContainer>
             {isVisibleAddDataView?
                 <BackgroundFilmView 

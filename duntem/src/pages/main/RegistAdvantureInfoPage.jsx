@@ -99,7 +99,6 @@ export const RegistAdvantureInfoPage = () => {
     }
     const onClickRegistAdvantureButton = async() => {
         const result = await checkAdvantureNameDuplicated()
-        console.log(result)
         if(result.empty){
             //중복이 아니니 로그인한 녀석 모험단 이름 디비 저장
             updateUserAdnvantureName()

@@ -9,7 +9,7 @@ const Container = styled.div`
     align-items: center;
     justify-content: center;
     flex: 1;
-    background-image: url(assets/img/mainBackgroundImg.jpg);
+    background-image: url(import.meta.env.MAIN_BACKGROUND_IMG);
     background-size: cover;  
     background-position: center ;
     background-repeat: no-repeat;

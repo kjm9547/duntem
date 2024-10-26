@@ -39,6 +39,7 @@ export const GoogleAuthButton = () => {
   } = useLocalStore()
   const navigate = useNavigate()
   const registUserData = async(data) => {
+    let value = null;
     if(data.user){
       const result = await checkFirebaseIdExist(data.user.email)
       if(!result){
@@ -54,26 +55,28 @@ export const GoogleAuthButton = () => {
             signedGoogleUser(doc.data())
           )
           if(doc.data().advantureGroup){
-            return true;
-          } else return false
+            value = true
+            
+          } else value = false
         })
       }  
     }
+    return value;
   }
   const handleGoogleLogin = async() => {
       const provider = new GoogleAuthProvider(); // provider를 구글로 설정
       signInWithPopup(auth, provider) // popup을 이용한 signup
         .then((data) => {
-          registUserData(data).then((res)=>{
-            if(res){
-              navigate('/main')
-          } else {
-              navigate('/regist/AdvantureInfo')
-          }
-            
-          })
-          
-          
+          console.log("console.log(res)",data)
+          registUserData(data)
+            .then((res)=>{
+              console.log(res)
+              if(res){
+                navigate('/main')
+              } else {
+                navigate('/regist/AdvantureInfo')
+              }
+            })          
         })
         .catch((err) => {
             console.log("errr",err);
@@ -82,7 +85,7 @@ export const GoogleAuthButton = () => {
   
     return(
         <IconButton 
-          onClick={()=>{handleGoogleLogin()}}>
+          onClick={()=>{console.log("qqqq",handleGoogleLogin())}}>
           <IconLogo src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA" alt="G"></IconLogo>
           <p>구글을 통한 로그인</p>
           </IconButton>

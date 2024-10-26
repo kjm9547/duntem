@@ -189,6 +189,10 @@ export const DashBoardContent = ({
                                 :itemIconPathList.offCreature
                                 }
                             />
+                            <ItemIcon src={
+                            "https://bbscdn.df.nexon.com/data6/commu/202403/8faa3db6-5443-ea55-1ea8-b4e847b9b16b.png"
+                                }
+                            />
                             
                             {/* <img src={img}></img>
                             https://img-api.neople.co.kr/df/items/d68b7a9d70e5851de5d0357a157a3882

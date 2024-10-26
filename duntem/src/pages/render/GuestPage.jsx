@@ -15,7 +15,7 @@ const Container = styled.div`
     align-items: center;
     justify-content: center;
     flex: 1;
-    background-image: url(assets/img/mainBackgroundImg.jpg);
+    background-image: url(${import.meta.env.VITE_MAIN_BACKGROUND_IMG});
     background-size: cover;  
     background-position: center ;
     background-repeat: no-repeat;
@@ -39,6 +39,10 @@ const SignButtonContainer = styled.div`
     align-items: center;
     height: 70vh;
     color:black;
+`
+const SignupText = styled.span`
+    color: #a5a5a5;
+    border-bottom: 1px solid #a5a5a5;
 `
 export const GuestPage = () => {
     const {
@@ -81,14 +85,15 @@ export const GuestPage = () => {
             } catch (err) {
                 console.log( err )
             }
-            
-            
             console.log("저장된 기록이 존재합니다..")
         } else {
-            
             console.log("저장된 기록이 없습니다.")
         }
     },[])
+
+    const onClickSignupText = () => {
+        navigate('/signup')
+    }
     return(
         <Container>
         <div 
@@ -112,7 +117,7 @@ export const GuestPage = () => {
                 <GoogleAuthButton/>
                 
                 <DuntemAuthButton/>
-                    <a>test main 이동 버튼</a>
+                    <SignupText onClick={()=>{onClickSignupText()}}>test main 이동 버튼</SignupText>
                     </SignButtonContainer>
             </div>
         </Container>
