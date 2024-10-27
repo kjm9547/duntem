@@ -56,7 +56,9 @@ export const DashBoardHeader = ({
     handleisVisibleAddDataView,
     onClickAddCharactorButton,
     top,
-    userData}) => {
+    userData,
+    handleIsEditMode
+}) => {
     
     useEffect(()=>{
         handleisVisibleAddDataView(false)
@@ -105,7 +107,9 @@ export const DashBoardHeader = ({
                     }}>
                     추가하기
                 </EditCharactorDataBtn>
-                <EditCharactorDataBtn>
+                <EditCharactorDataBtn
+                    onClick={()=>{handleIsEditMode(true)}}
+                    >
                     편집하기
                 </EditCharactorDataBtn>
                 <button onClick={()=>{

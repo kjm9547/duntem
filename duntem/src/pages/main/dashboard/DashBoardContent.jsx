@@ -63,9 +63,15 @@ const AddCharacterCard = styled.div`
     }
 `
 const CardHeaderContainer = styled.div`
-    display: flex;
-    flex: 0.2;
+    flex-direction: column;
+    height: 65px;
+    
     width:100%;
+`
+const IconContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    
 `
 const CardImageContainer = styled.div`
     display: flex;
@@ -86,8 +92,10 @@ const ItemIcon = styled.img`
     margin-left: 3px;
     filter: saturate(${props => props.saturate});
 `
+
 export const DashBoardContent = ({
-    onClickAddCharactorButton
+    onClickAddCharactorButton,
+    isEditMode
 }) => {
     const userId = useSelector(state=>state.user)
     const [charcaterList,setCharcaterList] = useState([])
@@ -145,13 +153,12 @@ export const DashBoardContent = ({
 
     }
     const handleCharacterCardDragStart = (e,v) => {
-        e.stopPropagation()
         const startItem = v;
         nowDraggingItem.current = v;
         console.log(nowDraggingItem)
     }
     const handleCharacterCardDrop = (e) => {
-        e.preventDefault()
+        
         console.log("eqweqw")
         console.log(e.target)
     }
@@ -165,14 +172,21 @@ export const DashBoardContent = ({
                 <CharacterCard 
                     key={value.characterId}
                     // onDrop
-                    onDragEnd={(e)=>{handleCharacterCardDrop(e)}}
-                    onDragStart={(e)=>{handleCharacterCardDragStart(e,value)}}
+                    draggable
+                   
+                    
                 >
-
-                    <CharacterDeleteButton/>
-                    <CardImageContainer>
+                    
+                    
+                    
+                    <CardImageContainer onDragStart={(e)=>{e.preventDefault()}}>
                     <CardHeaderContainer>
-                        
+                    <CharacterDeleteButton
+                        handleCharacterCardDragStart={handleCharacterCardDragStart}
+                        handleCharacterCardDrop={handleCharacterCardDrop}
+                        isEditMode={isEditMode}
+                    />
+                    <IconContainer>
                             <ItemIcon src={
                                 isItemEndSpec[index]?.isAvatar
                                 ?itemIconPathList.onAvatar
@@ -196,12 +210,7 @@ export const DashBoardContent = ({
                                 }
                                 saturate={isItemEndSpec[index].isSwitching[0]?1:0}
                             />
-                            
-                            {/* <img src={img}></img>
-                            https://img-api.neople.co.kr/df/items/d68b7a9d70e5851de5d0357a157a3882
-                            아바타 크리쳐 스위칭 오라
-                            <img src ={`https://img-api.neople.co.kr/df/skills/${value.skill.buff.skillInfo.skillId}`}></img> */}
-                        
+                            </IconContainer>
                     </CardHeaderContainer>
                     
                         <img src={`https://img-api.neople.co.kr/df/servers/prey/characters/${value.characterId}?zoom=600x690`}></img>
