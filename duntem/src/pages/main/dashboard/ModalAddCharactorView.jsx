@@ -103,7 +103,7 @@ const FloatingActionButton = styled.div`
 `
 export const ModalAddCharactorView = ({
     handleisVisibleAddDataView,
-    getIsVisibleAddDataView}) => {
+    }) => {
     const {addCharacterDataToFirebase} = characterService()
     
     const [text,setText] = useState()
@@ -111,7 +111,13 @@ export const ModalAddCharactorView = ({
     const [isLoadedApiData,setIsLoadedApiData] = useState(false)
     const [addButtonActive,setAddButtonActive] = useState(false)
 
-    const {getCharacterInfo} = dfService()
+    const {
+        getCharacterInfo,
+        getCharacterAvatarInfo,
+        getCharacterCreatureInfo,
+        getCharacterSwitchingInfo,
+        getMultItemDetailInfo
+    } = dfService()
     const {transferServerName} = dfServerName()
 
     const dispatch = useDispatch()
@@ -156,12 +162,31 @@ export const ModalAddCharactorView = ({
         setSearchResultData(newArray)
     }
 
-    const onClickAddDataButton = () => {
+    const onClickAddDataButton = async() => {
         const data = searchResultData.find((v)=> v.clicked)
-       
+        const [avatar, creature, skill] = await Promise.all([
+           getCharacterAvatarInfo(data.data.characterId,data.data.serverId),
+           getCharacterCreatureInfo(data.data.characterId,data.data.serverId),
+           getCharacterSwitchingInfo(data.data.characterId,data.data.serverId)
+        ])
+        console.log(avatar,creature,skill)
+
+        const aouraIndex = avatar?.findIndex((v)=> v.slotName === "오라 아바타")
+        if(aouraIndex && creature){
+            const items = creature.itemId+','+avatar[aouraIndex].itemId    
+            const itemData = await getMultItemDetailInfo(items)
+            avatar[aouraIndex].detail = itemData.rows[1]
+            data.data.creature = itemData.rows[0]    
+        }    
+        data.data.avatar = avatar
+        data.data.skill = skill
+        
         dispatch(setClickedCharacterData(data.data))
         dispatch(addCharacterToList(data.data))
         addCharacterDataToFirebase(user,data.data)
+        handleisVisibleAddDataView(false)
+    }
+    const onClickEditButton = () => {
         handleisVisibleAddDataView(false)
     }
     const NullDataView = () =>{
@@ -173,7 +198,6 @@ export const ModalAddCharactorView = ({
     }
     return(
         <Container 
-        getIsVisibleAddDataView={getIsVisibleAddDataView}
         className="ModalView">
             <SearchBoxContainer
              onKeyDown={(e)=>{
@@ -236,7 +260,8 @@ export const ModalAddCharactorView = ({
                     onClick={()=>{onClickAddDataButton()}}>
                     추가하기
                 </FloatingActionButton>
-                <FloatingActionButton>
+                <FloatingActionButton
+                    onClick={()=>{onClickEditButton()}}>
                     취소
                 </FloatingActionButton>
             </FloatingActionButtonContinaer>

@@ -19,9 +19,69 @@ export const dfService = () => {
             console.error('API 요청 실패:', error); // 오류 처리
         };
     }
+    const getCharacterCreatureInfo = async(characterId,serverId) => {
+        const path = import.meta.env.VITE_API_URL+`creature/${characterId}/${serverId}`;
+        console.log(path)
+        try{
+            const res = await axios.get(path)
+            return res.data.creature
+            }
+        catch(error){        
+            console.error('API 요청 실패:', error); // 오류 처리
+        };
+    }
+    const getCharacterAvatarInfo = async(characterId,serverId) => {
+        const path = import.meta.env.VITE_API_URL+`avatar/${characterId}/${serverId}`;
+        try{
+            const res = await axios.get(path)
+            return res.data.avatar
+            }
+        catch(error){        
+            console.error('API 요청 실패:', error); // 오류 처리
+        };
+    }
+    const getCharacterSwitchingInfo = async(characterId,serverId) => {
+        const path = import.meta.env.VITE_API_URL+`switching/${characterId}/${serverId}`;
+        try{
+            const res = await axios.get(path)
+            return res.data.skill
+            }
+        catch(error){        
+            console.error('API 요청 실패:', error); // 오류 처리
+        };
+    }
+
+    const getItemDetailInfo = async(itemId) => {
+        const path = import.meta.env.VITE_API_URL+`item/${itemId}`;
+        try{
+            const res = await axios.get(path)
+            return res.data.skill
+            }
+        catch(error){        
+            console.error('API 요청 실패:', error); // 오류 처리
+        };
+    }
+
+    const getMultItemDetailInfo = async(itemIds) => {
+        console.log(itemIds)
+        const path = import.meta.env.VITE_API_URL+`multItem/${itemIds}`;
+        try{
+            const res = await axios.get(path)
+            return res.data
+            }
+        catch(error){        
+            console.error('API 요청 실패:', error); // 오류 처리
+        };
+    }
     // https://img-api.neople.co.kr/df/servers/${serverId}/characters/${characterName}?zoom=${zoom}
     // https://img-api.neople.co.kr/df/itemId/${itemId}
     return{
-        getCharacterInfo
+        getCharacterInfo,
+        getCharacterCreatureInfo,
+        getCharacterAvatarInfo,
+        getCharacterSwitchingInfo,
+        getMultItemDetailInfo,
+        getItemDetailInfo
     }
+
 }

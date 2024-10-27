@@ -1,19 +1,17 @@
 import { useDispatch, useSelector } from "react-redux"
-import { useNavigate } from "react-router-dom"
-import { useLocalStore } from "../../../hooks/useLocalStore"
-import { useEffect, useState } from "react"
-import { dfService } from "../../../service/dfService"
-import { clearUserData } from "../../../redux/reducer/userSlice"
+import { useEffect, useRef, useState } from "react"
 import { characterService } from "../../../service/characterService"
 import styled from "styled-components"
 import { setArrayDataToCharacterList } from "../../../redux/reducer/dfCharacterListSlice"
+import { endSpecUtil } from "../../../utils/endSpecUtil"
+import { firebaseInitailizer } from "../../../firebase"
+import { itemIconPathList } from "../../../data/itemIconPathList"
+import { CharacterDeleteButton } from "./CharacterDeleteButton"
 
 const Container = styled.div`
     display: flex;
-    padding-left:50px;
-    padding-right:50px;
     padding-top: 25px;
-    
+    width: 100%;
 `
 const CharacterContainer = styled.div`
     display: flex;
@@ -21,7 +19,7 @@ const CharacterContainer = styled.div`
     flex-wrap: wrap;  /* 줄바꿈 허용 */
     flex-wrap: 4;
     gap: 16px;        /* 카드 사이 간격 */
-    width: 100vw;
+    width: 100%;
     height: 100%;
     padding-left: 2px;
     
@@ -30,12 +28,17 @@ const CharacterCard = styled.div`
     display: flex;
     width: 280px;
     box-sizing: border-box;
-    background-color: #D9D9D9;
+    background-color: #F3F3F3;
     padding: 20px;
     border-radius: 8px;
     height: 400px;
     flex-direction: column;
     align-items: center;
+    border: 1px solid #D9D9D9;
+    &:hover{
+        border: 2px solid #5A5AFD;
+        
+    }
 `
 const NullCard = styled.div`
     display: flex;
@@ -53,56 +56,154 @@ const AddCharacterCard = styled.div`
     height: 400px;
     flex-direction: column;
     align-items: center;
+    ;
+    &:hover{
+        border: 2px solid #5A5AFD;
+        
+    }
+`
+const CardHeaderContainer = styled.div`
+    display: flex;
+    flex: 0.2;
+    width:100%;
 `
 const CardImageContainer = styled.div`
-    
+    display: flex;
+    flex: 0.5;
+    flex-direction: column;
+    height: 100%;    
 `
 const CardTextContainer = styled.div`
     display: flex;
     flex-direction: column;
+    flex: 0.3;
 `
 const CardText = styled.div`
     text-align: center;
 `
-export const DashBoardContent = () => {
+const ItemIcon = styled.img`
+    border-radius: 5px;
+    margin-left: 3px;
+    filter: saturate(${props => props.saturate});
+`
+export const DashBoardContent = ({
+    onClickAddCharactorButton
+}) => {
     const userId = useSelector(state=>state.user)
     const [charcaterList,setCharcaterList] = useState([])
+    const [isItemEndSpec,setIsItemEndSpec] = useState([])
+    const nowDraggingItem = useRef(null)
     const data =useSelector((state)=>state.dfCharcterList)
+
     const dispatch = useDispatch()
-   useEffect(()=>{
-    getUserAllCharacterData(userId.id).then((res)=>{
-        
-        let newArray = new Array(res.rows.length)
-        newArray = [...res.rows]
-        for(let i = 0; i< 4-res.rows.length%4; i++){
-            newArray.push(undefined)
-        }
-        setCharcaterList(newArray)
-        console.log(newArray)
-        dispatch(setArrayDataToCharacterList(newArray))
-        
-    })
-    
+
+    const {getUserAllCharacterData} = characterService()
+    const {
+        isCharacterSetEndAoura,
+        isCharacterSetEndCreature,
+        isCharacterSetFullSwitching,
+        isCharacterSetRareAvatar} = endSpecUtil()
+    useEffect(()=>{
+        getUserAllCharacterData(userId.id)
+        .then((res)=>{
+            let newArray = new Array(res.rows.length)
+                newArray = [...res.rows]
+            for(let i = 0; i< 4-res.rows.length%4; i++){
+                newArray.push(undefined)
+            }
+            setCharcaterList(newArray)
+            dispatch(setArrayDataToCharacterList(newArray))
+            checkCharacterEndSpec(newArray)
+        })
    },[])
    useEffect(()=>{
-    console.log("redux data === ",data)
-    console.log(data.rows.length,charcaterList.length)
-    if(charcaterList.length > 0 && charcaterList.length != data.rows.length){
-        console.log("data===",data.rows)
+    if(charcaterList.length > 0
+        && charcaterList.length != data.rows.length){
         setCharcaterList(data.rows)
-    }
-     
+    } 
    },[data])
-   useEffect(()=>{console.log("eqweq")},[])
-   const {getUserAllCharacterData} = characterService()
+ 
+    
+    const checkCharacterEndSpec = (data) => {
+        const newArray = [...isItemEndSpec]
+        data.map((v,i)=>{
+            if(v){
+                newArray.push({
+                    id:data[i].characterName,
+                    isAvatar:isCharacterSetRareAvatar(v.avatar),
+                    isCreature:isCharacterSetEndCreature(v.creature),
+                    isAoura:isCharacterSetEndAoura(v.avatar),
+                    isSwitching:isCharacterSetFullSwitching(v)
+                })    
+            }
+        })
+        console.log(newArray)
+        setIsItemEndSpec(newArray)
+    }
+
+    const handleCharacterCardDragOver = () => {
+
+    }
+    const handleCharacterCardDragStart = (e,v) => {
+        e.stopPropagation()
+        const startItem = v;
+        nowDraggingItem.current = v;
+        console.log(nowDraggingItem)
+    }
+    const handleCharacterCardDrop = (e) => {
+        e.preventDefault()
+        console.log("eqweqw")
+        console.log(e.target)
+    }
     return(
         <Container>
             <CharacterContainer>
             {/* https://img-api.neople.co.kr/df/items/<itemId> */}
-            {charcaterList.map((value,index)=>(
+            {charcaterList.map((value,index)=>{
+                return(
                 (value?
-                <CharacterCard key={value.characterId}>
+                <CharacterCard 
+                    key={value.characterId}
+                    // onDrop
+                    onDragEnd={(e)=>{handleCharacterCardDrop(e)}}
+                    onDragStart={(e)=>{handleCharacterCardDragStart(e,value)}}
+                >
+
+                    <CharacterDeleteButton/>
                     <CardImageContainer>
+                    <CardHeaderContainer>
+                        
+                            <ItemIcon src={
+                                isItemEndSpec[index]?.isAvatar
+                                ?itemIconPathList.onAvatar
+                                :itemIconPathList.offAvatar
+                                }
+                            />
+                            <ItemIcon src={
+                                isItemEndSpec[index]?.isAoura
+                                ?itemIconPathList.onAoura
+                                :itemIconPathList.offAoura
+                                }
+                            />
+                            <ItemIcon src={
+                                isItemEndSpec[index]?.isCreature
+                                ?itemIconPathList.onCreature
+                                :itemIconPathList.offCreature
+                                }
+                            />
+                            <ItemIcon src={
+                                isItemEndSpec[index]?.isSwitching[1]
+                                }
+                                saturate={isItemEndSpec[index].isSwitching[0]?1:0}
+                            />
+                            
+                            {/* <img src={img}></img>
+                            https://img-api.neople.co.kr/df/items/d68b7a9d70e5851de5d0357a157a3882
+                            아바타 크리쳐 스위칭 오라
+                            <img src ={`https://img-api.neople.co.kr/df/skills/${value.skill.buff.skillInfo.skillId}`}></img> */}
+                        
+                    </CardHeaderContainer>
+                    
                         <img src={`https://img-api.neople.co.kr/df/servers/prey/characters/${value.characterId}?zoom=600x690`}></img>
                     </CardImageContainer>
                     <CardTextContainer>
@@ -111,10 +212,15 @@ export const DashBoardContent = () => {
                        <CardText>{value.jobName}</CardText>
                     </CardTextContainer>
                 </CharacterCard>
-                :(charcaterList[index-1]?<AddCharacterCard>
+                :(charcaterList[index-1]?
+                <AddCharacterCard
+                    key={`addCard`}
+                    onClick={()=>{onClickAddCharactorButton()}}
+                >
                     add
-                </AddCharacterCard>:<NullCard></NullCard>))
-            ))}
+                </AddCharacterCard>:<NullCard key={`nullCard`+index}></NullCard>))
+            )}
+            )}
             </CharacterContainer>         
         </Container>
     )

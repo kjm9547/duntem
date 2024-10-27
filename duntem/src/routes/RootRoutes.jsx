@@ -4,6 +4,7 @@ import { SignInPage } from "../pages/sign/signin/SignInPage"
 import { SignUnPage } from "../pages/sign/signup/SignUpPage"
 import { MainView } from "../pages/main/MainView"
 import { RegistAdvantureInfoPage } from "../pages/main/RegistAdvantureInfoPage"
+import { CharacterInfoView } from "../pages/characterinfo/CharacterInfoView"
 
 export const RootRoutes = () => {
     return (
@@ -13,6 +14,7 @@ export const RootRoutes = () => {
             <Route path="/signup" element={<SignUnPage/>}/>
             <Route path="/main" element={<MainView/>}/>
             <Route path="/regist/AdvantureInfo" element={<RegistAdvantureInfoPage/>}/>
+            <Route path="/characterInfoView" element={<CharacterInfoView/>}/>
         </Routes>
     )
 }

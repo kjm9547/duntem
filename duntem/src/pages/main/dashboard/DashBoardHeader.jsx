@@ -7,7 +7,7 @@ const Container = styled.div`
     display: flex;
     height: 175px;
     
-    /* border: 1px solid black; */
+    border-bottom: 1px solid #d9d9d9;
     /* padding-left: 200px;
     padding-right: 200px; */
 `
@@ -44,7 +44,7 @@ const BackgroundFilmView = styled.div`
     height: 100%;
     background-color: rgba(0,0,0,0.6);
     left: 0;
-    top: 0;
+    top: ${(props)=>props.top}px;
     
     display: flex;
     justify-content: center;
@@ -52,17 +52,44 @@ const BackgroundFilmView = styled.div`
     
 `
 export const DashBoardHeader = ({
-    getIsVisibleAddDataView,
+    isVisibleAddDataView,
     handleisVisibleAddDataView,
+    onClickAddCharactorButton,
+    top,
     userData}) => {
-    const onClickAddCharactorButton = () => {
-        handleisVisibleAddDataView(true)
-    }
+    
+    useEffect(()=>{
+        handleisVisibleAddDataView(false)
+    },[])
+   
     const onClickfilmView = (e) => {
         if(e.target.classList.contains("filmView")){
             handleisVisibleAddDataView(false)
         }
     }
+    const fetchData = async () => {
+        try {
+          const response = await fetch(
+            "https://api.neople.co.kr/df/servers?apikey=qPMao1ttAOaA6bVsnpbZS242s4KvtWo2",
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+    
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+    
+          const result = await response.json();
+          console.log(result)
+        } catch (err) {
+          
+          console.error(err);
+        }
+      };
     return(
         <Container>
             <TextTitleContainer>
@@ -81,13 +108,18 @@ export const DashBoardHeader = ({
                 <EditCharactorDataBtn>
                     편집하기
                 </EditCharactorDataBtn>
+                <button onClick={()=>{
+                    fetchData()
+                }}>
+                    test
+                </button>
             </EditCharactorDataBtnContainer>
-            {getIsVisibleAddDataView()?
+            {isVisibleAddDataView?
                 <BackgroundFilmView 
                     className="filmView"
+                    top={top}
                     onClick={(e)=>{onClickfilmView(e)}}>
                     <ModalAddCharactorView 
-                    getIsVisibleAddDataView={getIsVisibleAddDataView}
                         handleisVisibleAddDataView={handleisVisibleAddDataView}/>
                 </BackgroundFilmView>:null}
         </Container>
