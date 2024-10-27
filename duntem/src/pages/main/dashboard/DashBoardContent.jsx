@@ -84,6 +84,7 @@ const CardText = styled.div`
 const ItemIcon = styled.img`
     border-radius: 5px;
     margin-left: 3px;
+    filter: saturate(${props => props.saturate});
 `
 export const DashBoardContent = ({
     onClickAddCharactorButton
@@ -131,11 +132,12 @@ export const DashBoardContent = ({
                     id:data[i].characterName,
                     isAvatar:isCharacterSetRareAvatar(v.avatar),
                     isCreature:isCharacterSetEndCreature(v.creature),
-                    isAoura:isCharacterSetEndAoura(v.avatar)
+                    isAoura:isCharacterSetEndAoura(v.avatar),
+                    isSwitching:isCharacterSetFullSwitching(v)
                 })    
             }
         })
-
+        console.log(newArray)
         setIsItemEndSpec(newArray)
     }
 
@@ -172,26 +174,27 @@ export const DashBoardContent = ({
                     <CardHeaderContainer>
                         
                             <ItemIcon src={
-                                isItemEndSpec[index].isAvatar
+                                isItemEndSpec[index]?.isAvatar
                                 ?itemIconPathList.onAvatar
                                 :itemIconPathList.offAvatar
                                 }
                             />
                             <ItemIcon src={
-                                isItemEndSpec[index].isAoura
+                                isItemEndSpec[index]?.isAoura
                                 ?itemIconPathList.onAoura
                                 :itemIconPathList.offAoura
                                 }
                             />
                             <ItemIcon src={
-                                isItemEndSpec[index].isCreature
+                                isItemEndSpec[index]?.isCreature
                                 ?itemIconPathList.onCreature
                                 :itemIconPathList.offCreature
                                 }
                             />
                             <ItemIcon src={
-                            "https://bbscdn.df.nexon.com/data6/commu/202403/8faa3db6-5443-ea55-1ea8-b4e847b9b16b.png"
+                                isItemEndSpec[index]?.isSwitching[1]
                                 }
+                                saturate={isItemEndSpec[index].isSwitching[0]?1:0}
                             />
                             
                             {/* <img src={img}></img>
