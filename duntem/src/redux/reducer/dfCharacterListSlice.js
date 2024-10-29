@@ -10,6 +10,7 @@ export const dfCharacterListSlice = createSlice({
             
             // initialState.rows = action.payload
             state.rows = action.payload
+            console.log(state.rows)
         },
         addCharacterToList: (state,action) => {   
             if(state.rows)  {
@@ -31,12 +32,24 @@ export const dfCharacterListSlice = createSlice({
         },
         clearCharacterData:(state,action) => {
             state = dfCharacterListSlice.getInitialState()
+        },
+        removeCharaterData:(state,action) => {
+            console.log(action.payload)
+            const newArray = [...state.rows];
+            const idx = state.rows.findIndex((v)=> v.characterId === action.payload)
+            console.log("idx",idx)
+            newArray.splice(idx,1)
+            state.rows = newArray
+            console.log(state.rows)
+            
+
         }
     }
 })
 export const { 
     setArrayDataToCharacterList,
-    addCharacterToList
+    addCharacterToList,
+    removeCharaterData
 } = dfCharacterListSlice.actions
 
 export default dfCharacterListSlice.reducer

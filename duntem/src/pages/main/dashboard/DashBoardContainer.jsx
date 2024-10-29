@@ -27,6 +27,7 @@ export const DashBoardContainder = () => {
     const userData = useSelector(state=>state.user)
     const data =useSelector((state)=>state.dfCharacter)
     const [isVisibleAddDataView,setIsVisibleAddDataView] = useState(true)
+    const [isEditMode,setIsEditMode] = useState(false)
     const [top,setTop] = useState(0)
 
     const handleisVisibleAddDataView = (value) => {
@@ -38,9 +39,9 @@ export const DashBoardContainder = () => {
         console.log(top)
         handleisVisibleAddDataView(true)
     }
-    useEffect(()=>{
-        console.log("dfcharacter Data",data)
-    },[data])
+    const handleIsEditMode = (value) => {
+        setIsEditMode(value)
+    }
     return (
         <Container>
             <DashBoardHeader
@@ -48,6 +49,7 @@ export const DashBoardContainder = () => {
                 isVisibleAddDataView={isVisibleAddDataView}
                 handleisVisibleAddDataView={handleisVisibleAddDataView}
                 onClickAddCharactorButton={onClickAddCharactorButton}
+                handleIsEditMode={handleIsEditMode}
                 userData={userData}/>
             <Content>
                 <AdsDisplayContainer>
@@ -56,6 +58,7 @@ export const DashBoardContainder = () => {
                 <DashBoardContent
                     onClickAddCharactorButton={onClickAddCharactorButton}
                     handleisVisibleAddDataView={handleisVisibleAddDataView}
+                    isEditMode={isEditMode}
                 />
                 <AdsDisplayContainer>
                     {/* <AdDisplay/> */}

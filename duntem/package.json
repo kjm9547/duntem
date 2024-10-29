@@ -11,6 +11,10 @@
     "deploy-fb": "vite build && firebase deploy"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/material": "^6.1.5",
+    "@mui/styled-engine-sc": "^6.1.5",
     "@reduxjs/toolkit": "^2.2.7",
     "axios": "^1.7.7",
     "firebaseui": "^6.1.0",

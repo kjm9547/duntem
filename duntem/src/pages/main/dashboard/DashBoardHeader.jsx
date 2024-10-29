@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { ModalAddCharactorView } from "./ModalAddCharactorView"
+import { Button } from '@mui/material';
 
 const Container = styled.div`
     display: flex;
@@ -29,9 +30,9 @@ const EditCharactorDataBtnContainer = styled.div`
     /* border:1px solid black; */
     
 `
-const EditCharactorDataBtn = styled.button`
+const EditCharactorDataBtn = styled(Button)`
     /* border:1px solid blue; */
-    margin-right: 10px;
+    margin-right: 15px;
     background-color: #5A5AFD;
     color: white;
 `
@@ -56,7 +57,9 @@ export const DashBoardHeader = ({
     handleisVisibleAddDataView,
     onClickAddCharactorButton,
     top,
-    userData}) => {
+    userData,
+    handleIsEditMode
+}) => {
     
     useEffect(()=>{
         handleisVisibleAddDataView(false)
@@ -99,20 +102,21 @@ export const DashBoardHeader = ({
             </TextTitleContainer>
             <TempBoardHeader/>
             <EditCharactorDataBtnContainer>
-                <EditCharactorDataBtn
+                    <EditCharactorDataBtn
+                    variant="contained" 
+                    disableElevation
                     onClick={()=>{
                         onClickAddCharactorButton()
                     }}>
                     추가하기
                 </EditCharactorDataBtn>
-                <EditCharactorDataBtn>
+                <EditCharactorDataBtn
+                    variant="contained" 
+                    disableElevation
+                    onClick={()=>{handleIsEditMode(true)}}
+                    >
                     편집하기
                 </EditCharactorDataBtn>
-                <button onClick={()=>{
-                    fetchData()
-                }}>
-                    test
-                </button>
             </EditCharactorDataBtnContainer>
             {isVisibleAddDataView?
                 <BackgroundFilmView 
@@ -120,6 +124,7 @@ export const DashBoardHeader = ({
                     top={top}
                     onClick={(e)=>{onClickfilmView(e)}}>
                     <ModalAddCharactorView 
+                        isVisibleAddDataView={isVisibleAddDataView}
                         handleisVisibleAddDataView={handleisVisibleAddDataView}/>
                 </BackgroundFilmView>:null}
         </Container>
