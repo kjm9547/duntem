@@ -71,8 +71,12 @@ export const characterService = () => {
         const docRef = await getDocs(q)
         return docRef.docs[0].data()
     }
+    const removeCharacterFireStore = async (charactorId) => {
+
+    }
     return{
         addCharacterDataToFirebase,
-        getUserAllCharacterData
+        getUserAllCharacterData,
+        removeCharacterFireStore
     }
 }

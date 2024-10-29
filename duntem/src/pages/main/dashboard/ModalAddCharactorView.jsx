@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { dfService } from "../../../service/dfService"
 import FadeLoader from "react-spinners/FadeLoader"
 import { dfServerName } from "../../../data/dfServerName"
@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { setClickedCharacterData } from "../../../redux/reducer/dfCharacterSlice"
 import { characterService } from "../../../service/characterService"
 import { addCharacterToList } from "../../../redux/reducer/dfCharacterListSlice"
+
 const Container = styled.div`
     display: flex;
     background-color: white;

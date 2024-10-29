@@ -1,12 +1,12 @@
 import { useDispatch, useSelector } from "react-redux"
-import { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { characterService } from "../../../service/characterService"
 import styled from "styled-components"
 import { setArrayDataToCharacterList } from "../../../redux/reducer/dfCharacterListSlice"
 import { endSpecUtil } from "../../../utils/endSpecUtil"
 import { firebaseInitailizer } from "../../../firebase"
 import { itemIconPathList } from "../../../data/itemIconPathList"
-import { CharacterDeleteButton } from "./CharacterDeleteButton"
+import { EditDashBoardHeader } from "./EditDashBoardHeader"
 
 const Container = styled.div`
     display: flex;
@@ -98,10 +98,9 @@ export const DashBoardContent = ({
     isEditMode
 }) => {
     const userId = useSelector(state=>state.user)
-    const [charcaterList,setCharcaterList] = useState([])
+    const charcaterList = useSelector((state)=>state.dfCharcterList.rows)
     const [isItemEndSpec,setIsItemEndSpec] = useState([])
-    const nowDraggingItem = useRef(null)
-    const data =useSelector((state)=>state.dfCharcterList)
+    const [cardRefs] = useState({});
 
     const dispatch = useDispatch()
 
@@ -119,19 +118,17 @@ export const DashBoardContent = ({
             for(let i = 0; i< 4-res.rows.length%4; i++){
                 newArray.push(undefined)
             }
-            setCharcaterList(newArray)
+            
             dispatch(setArrayDataToCharacterList(newArray))
-            checkCharacterEndSpec(newArray)
+            
+            
         })
    },[])
    useEffect(()=>{
-    if(charcaterList.length > 0
-        && charcaterList.length != data.rows.length){
-        setCharcaterList(data.rows)
-    } 
-   },[data])
- 
-    
+    charcaterList ?
+    checkCharacterEndSpec(charcaterList) 
+    : null
+   },[charcaterList])
     const checkCharacterEndSpec = (data) => {
         const newArray = [...isItemEndSpec]
         data.map((v,i)=>{
@@ -152,40 +149,57 @@ export const DashBoardContent = ({
     const handleCharacterCardDragOver = () => {
 
     }
-    const handleCharacterCardDragStart = (e,v) => {
-        const startItem = v;
-        nowDraggingItem.current = v;
-        console.log(nowDraggingItem)
+    const handleCharacterCardDragStart = (e,characterId) => {
+        const ref = cardRefs[characterId];
+        const ghostDiv = ref.current.cloneNode(true); // 요소를 복제
+        // 커스텀 Div를 드래그 이미지로 설정
+        ghostDiv.style.position = "absolute";
+        ghostDiv.style.top = "-9999px"; // 화면에서 보이지 않도록 이동
+        ghostDiv.style.pointerEvents = "none"; // 드래그 중 클릭되지 않도록
+  
+        document.body.appendChild(ghostDiv); // DOM에 추가
+  
+        // 복제한 요소를 드래그 이미지로 설정
+        e.dataTransfer.setDragImage(ghostDiv, 35, 35);
+
+
     }
-    const handleCharacterCardDrop = (e) => {
+    const handleCharacterCardDrop = (e,characterId) => {
+        console.log("drop")
+    }
+    const handleDraggingEvent = (e,characterId) => {
+        console.log("ref")
         
-        console.log("eqweqw")
-        console.log(e.target)
     }
     return(
         <Container>
             <CharacterContainer>
             {/* https://img-api.neople.co.kr/df/items/<itemId> */}
-            {charcaterList.map((value,index)=>{
+            {charcaterList?.map((value,index)=>{
+                if (!value) return null;
+
+                if (!cardRefs[value.characterId]) {
+                  cardRefs[value.characterId] = React.createRef();
+                }
+            
                 return(
                 (value?
                 <CharacterCard 
                     key={value.characterId}
-                    // onDrop
-                    draggable
-                   
-                    
-                >
-                    
-                    
-                    
-                    <CardImageContainer onDragStart={(e)=>{e.preventDefault()}}>
-                    <CardHeaderContainer>
-                    <CharacterDeleteButton
-                        handleCharacterCardDragStart={handleCharacterCardDragStart}
-                        handleCharacterCardDrop={handleCharacterCardDrop}
-                        isEditMode={isEditMode}
-                    />
+                    ref={cardRefs[value.characterId]}
+                    onDragOver={()=>{console.log("hi")}}
+                >   
+                    <CardImageContainer >
+                    <CardHeaderContainer 
+                        
+                    >
+                        <EditDashBoardHeader
+                            handleCharacterCardDragStart={handleCharacterCardDragStart}
+                            handleCharacterCardDrop={handleCharacterCardDrop}
+                            handleDraggingEvent={handleDraggingEvent}
+                            isEditMode={isEditMode}
+                            characterId={value.characterId}
+                        />
                     <IconContainer>
                             <ItemIcon src={
                                 isItemEndSpec[index]?.isAvatar
@@ -208,7 +222,7 @@ export const DashBoardContent = ({
                             <ItemIcon src={
                                 isItemEndSpec[index]?.isSwitching[1]
                                 }
-                                saturate={isItemEndSpec[index].isSwitching[0]?1:0}
+                                saturate={isItemEndSpec[index]?.isSwitching[0]?1:0}
                             />
                             </IconContainer>
                     </CardHeaderContainer>
