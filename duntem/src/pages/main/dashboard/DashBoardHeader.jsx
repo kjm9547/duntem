@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import styled from "@emotion/styled"
-import { ModalAddCharactorView } from "./ModalAddCharactorView"
+import { ModalAddCharactorView } from "./modalCard/ModalAddCharactorView"
 import { Button } from '@mui/material';
 
 const Container = styled.div`

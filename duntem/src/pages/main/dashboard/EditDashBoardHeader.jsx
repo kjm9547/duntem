@@ -1,72 +1,82 @@
-import styled from "@emotion/styled"
+import styled from "@emotion/styled";
 import { IoClose } from "react-icons/io5";
 import { MdDragIndicator } from "react-icons/md";
-import {Button, ToggleButton} from "@mui/material"
-import { useEffect } from "react";
+import { Box, Button, Modal, ToggleButton, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 import { removeCharaterData } from "../../../redux/reducer/dfCharacterListSlice";
 import { useDispatch } from "react-redux";
 
 const Container = styled.div`
-    margin-left: -20px;
-    width: 120%;
-    height: 40px;
-    
-    display: flex;
-    flex-direction: row;
-    
-    justify-content: space-between;
-    
-`
+  margin-left: -20px;
+  width: 120%;
+  height: 40px;
+
+  display: flex;
+  flex-direction: row;
+
+  justify-content: space-between;
+`;
 const CharacterDragButton = styled.div`
-    width: 35px;
-    height: 35px;
-    
-    :hover{
-        /* border: 1px solid black ; */
-        border-radius: 50%;
-        cursor: grab;
-    }
-`
-const RemoveButton = styled(ToggleButton)`
+  width: 35px;
+  height: 35px;
+
+  :hover {
+    /* border: 1px solid black ; */
     border-radius: 50%;
-    width: 35px;
-    height: 35px;
-    /* background-color: #DF4E4E; */
-`
+    cursor: grab;
+  }
+`;
+const RemoveButton = styled(ToggleButton)`
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  /* background-color: #DF4E4E; */
+`;
 export const EditDashBoardHeader = ({
-    handleCharacterCardDragStart,
-    handleCharacterCardDrop,
-    handleDraggingEvent,
-    isEditMode,
-    characterId
+  handleCharacterCardDragStart,
+  handleCharacterCardDrop,
+  handleDraggingEvent,
+  isEditMode,
+  characterId,
+  handleSetIsDeleteMode,
+  handleSetCharactor,
 }) => {
-    const dispatch = useDispatch()
-    return(
-        <Container
-            >
-            {isEditMode&&
-            <>
-            <CharacterDragButton  
-                draggable
-                onDragEnd={(e)=>{handleCharacterCardDrop(e)}}
-                onDragStart={(e)=>{handleCharacterCardDragStart(e,characterId)}}
-                onDragOver={(e)=>{
-                    handleDraggingEvent()
-                }}
-                >
-                <MdDragIndicator  size={24}/>
-                
-            </CharacterDragButton>
-            <RemoveButton 
-                color="error"
-                value="bold"
-                aria-label="bold"
-                onClick={()=>{dispatch(removeCharaterData(characterId))}}
-             >
-                <IoClose size={25}/>
-            </RemoveButton>
-            </>
-        }
-        </Container>
-    )
-}
+  const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
+  const onClickRemoveButton = () => {
+    console.log(characterId);
+    handleSetIsDeleteMode(true);
+    handleSetCharactor(characterId);
+  };
+  return (
+    <Container>
+      {isEditMode && (
+        <>
+          <CharacterDragButton
+            draggable
+            onDragEnd={(e) => {
+              handleCharacterCardDrop(e);
+            }}
+            onDragStart={(e) => {
+              handleCharacterCardDragStart(e, characterId);
+            }}
+            onDragOver={(e) => {
+              handleDraggingEvent();
+            }}
+          >
+            <MdDragIndicator size={24} />
+          </CharacterDragButton>
+          <RemoveButton
+            color="error"
+            value="bold"
+            aria-label="bold"
+            onClick={onClickRemoveButton}
+          >
+            {/* dispatch(removeCharaterData(characterId)) */}
+            <IoClose size={25} />
+          </RemoveButton>
+        </>
+      )}
+    </Container>
+  );
+};
