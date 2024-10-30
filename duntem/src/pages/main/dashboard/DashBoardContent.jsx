@@ -161,12 +161,15 @@ export const DashBoardContent = ({ onClickAddCharactorButton, isEditMode }) => {
   return (
     <Container>
       <CharacterContainer>
-        <ModalEditCard
-          charactor={charactor}
-          removeCharacterFireStore={removeCharacterFireStore}
-          isDeleteMode={isDeleteMode}
-          handleSetIsDeleteMode={handleSetIsDeleteMode}
-        />
+        {isDeleteMode ? (
+          <ModalEditCard
+            charactor={charactor}
+            removeCharacterFireStore={removeCharacterFireStore}
+            isDeleteMode={isDeleteMode}
+            handleSetIsDeleteMode={handleSetIsDeleteMode}
+          />
+        ) : null}
+
         {charcaterList?.map((value, index) => {
           if (!value) return null;
 

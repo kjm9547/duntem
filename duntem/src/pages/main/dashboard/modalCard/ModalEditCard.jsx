@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 
 const Container = styled.div`
   position: absolute;
-  top: 400px;
+  top: ${(props) => `calc(${props.point}px + 350px)`};
   width: 250px;
   height: 115px;
   background-color: white;
@@ -33,7 +33,6 @@ const Button = styled(Chip)`
 export const ModalEditCard = ({
   charactor,
   removeCharacterFireStore,
-  isDeleteMode,
   handleSetIsDeleteMode,
 }) => {
   const dispatch = useDispatch();
@@ -53,8 +52,8 @@ export const ModalEditCard = ({
   const onClickCancel = () => {
     handleSetIsDeleteMode(false);
   };
-  return isDeleteMode ? (
-    <Container>
+  return (
+    <Container point={window.scrollY}>
       <TitleText>삭제 하시겠습니까?</TitleText>
       <ButtonContainer>
         <Button
@@ -72,5 +71,5 @@ export const ModalEditCard = ({
         />
       </ButtonContainer>
     </Container>
-  ) : null;
+  );
 };
