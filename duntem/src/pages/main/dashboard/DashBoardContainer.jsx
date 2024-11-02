@@ -45,6 +45,7 @@ export const DashBoardContainder = () => {
     <Container>
       <DashBoardHeader
         top={top}
+        isEditMode={isEditMode}
         isVisibleAddDataView={isVisibleAddDataView}
         handleisVisibleAddDataView={handleisVisibleAddDataView}
         onClickAddCharactorButton={onClickAddCharactorButton}
