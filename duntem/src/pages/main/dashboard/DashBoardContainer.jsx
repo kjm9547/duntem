@@ -22,6 +22,11 @@ const AdsDisplayContainer = styled.div`
   justify-content: center;
 `;
 
+const InfoBody = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 export const DashBoardContainder = () => {
   const userData = useSelector((state) => state.user);
   const data = useSelector((state) => state.dfCharacter);
@@ -43,23 +48,30 @@ export const DashBoardContainder = () => {
   };
   return (
     <Container>
-      <DashBoardHeader
-        top={top}
-        isVisibleAddDataView={isVisibleAddDataView}
-        handleisVisibleAddDataView={handleisVisibleAddDataView}
-        onClickAddCharactorButton={onClickAddCharactorButton}
-        handleIsEditMode={handleIsEditMode}
-        userData={userData}
-      />
+      <AdsDisplayContainer>
+        <AdDisplay />
+      </AdsDisplayContainer>
+
       <Content>
         <AdsDisplayContainer>
           <AdDisplay />
         </AdsDisplayContainer>
-        <DashBoardContent
-          onClickAddCharactorButton={onClickAddCharactorButton}
-          handleisVisibleAddDataView={handleisVisibleAddDataView}
-          isEditMode={isEditMode}
-        />
+        <InfoBody>
+          <DashBoardHeader
+            top={top}
+            isEditMode={isEditMode}
+            isVisibleAddDataView={isVisibleAddDataView}
+            handleisVisibleAddDataView={handleisVisibleAddDataView}
+            onClickAddCharactorButton={onClickAddCharactorButton}
+            handleIsEditMode={handleIsEditMode}
+            userData={userData}
+          />
+          <DashBoardContent
+            onClickAddCharactorButton={onClickAddCharactorButton}
+            handleisVisibleAddDataView={handleisVisibleAddDataView}
+            isEditMode={isEditMode}
+          />
+        </InfoBody>
         <AdsDisplayContainer>{/* <AdDisplay/> */}</AdsDisplayContainer>
       </Content>
       <Footer />

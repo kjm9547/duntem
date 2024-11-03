@@ -54,14 +54,8 @@ export const EditDashBoardHeader = ({
         <>
           <CharacterDragButton
             draggable
-            onDragEnd={(e) => {
-              handleCharacterCardDrop(e);
-            }}
             onDragStart={(e) => {
               handleCharacterCardDragStart(e, characterId);
-            }}
-            onDragOver={(e) => {
-              handleDraggingEvent();
             }}
           >
             <MdDragIndicator size={24} />
