@@ -29,13 +29,13 @@ const CharacterCard = styled.div`
   display: flex;
   width: 280px;
   box-sizing: border-box;
-  background-color: #f3f3f3;
+  background-color: #ffffff;
   padding: 20px;
   border-radius: 8px;
   height: 400px;
   flex-direction: column;
   align-items: center;
-  border: 1px solid #d9d9d9;
+  border: 1px solid #e0e0e0;
   &:hover {
     border: 2px solid #5a5afd;
   }
@@ -83,6 +83,14 @@ const CardTextContainer = styled.div`
 `;
 const CardText = styled.div`
   text-align: center;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: ${(props) => props.size + "px"};
+  border: ${(props) =>
+    props.value === "jobName" ? "0.3px solid #DCDCDC " : null};
+  border-radius: 8px;
+  background-color: ${(props) =>
+    props.value === "jobName" ? "#f5f5f5 " : null};
 `;
 const ItemIcon = styled.img`
   border-radius: 5px;
@@ -172,7 +180,7 @@ export const DashBoardContent = ({ onClickAddCharactorButton, isEditMode }) => {
           if (!cardRefs[value.characterId]) {
             cardRefs[value.characterId] = React.createRef();
           }
-
+          console.log(value);
           return value ? (
             <CharacterCard
               key={value.characterId}
@@ -221,41 +229,17 @@ export const DashBoardContent = ({ onClickAddCharactorButton, isEditMode }) => {
                     saturate={value.isEndSpec?.isSwitching[0] ? 1 : 0}
                   ></ItemIcon>
                 </CardHeaderContainer>
-
                 <img
                   src={`https://img-api.neople.co.kr/df/servers/${value.serverId}/characters/${value.characterId}?zoom=600x690`}
                 ></img>
-                {/* <ItemIcon
-                      src={
-                        isItemEndSpec[index]?.isAvatar
-                          ? itemIconPathList.onAvatar
-                          : itemIconPathList.offAvatar
-                      }
-                    />
-                    <ItemIcon
-                      src={
-                        isItemEndSpec[index]?.isAoura
-                          ? itemIconPathList.onAoura
-                          : itemIconPathList.offAoura
-                      }
-                    />
-                    <ItemIcon
-                      src={
-                        isItemEndSpec[index]?.isCreature
-                          ? itemIconPathList.onCreature
-                          : itemIconPathList.offCreature
-                      }
-                    />
-                    <ItemIcon
-                      src={isItemEndSpec[index]?.isSwitching[1]}
-                      saturate={isItemEndSpec[index]?.isSwitching[0] ? 1 : 0}
-                    />
-                     */}
               </CardImageContainer>
               <CardTextContainer>
-                <CardText>{value.fame}</CardText>
-                <CardText>{value.characterName}</CardText>
-                <CardText>{value.jobName}</CardText>
+                <CardText size={12}>{value.fame}</CardText>
+                <CardText size={14}>{value.characterName}</CardText>
+                <CardText value={"jobName"} size={12}>
+                  {value.jobGrowName}
+                </CardText>
+                <CardText size={10}>길드이름</CardText>
               </CardTextContainer>
             </CharacterCard>
           ) : charcaterList[index - 1] ? (
