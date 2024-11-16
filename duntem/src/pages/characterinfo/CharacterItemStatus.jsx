@@ -1,7 +1,12 @@
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
-import { itemIconPathList } from "../../data/itemIconPathList";
 import styled from "styled-components";
+import { itemIconPathList } from "../../data/itemIconPathList";
+import { CharacterEquipmentList } from "./CharacterEquipmentList";
+
+const Container = styled.div`
+    border: 1px solid black;
+    flex-direction: row;
+    display: flex;
+`;
 const CharacterCard = styled.div`
     display: flex;
     width: 280px;
@@ -53,16 +58,9 @@ const ItemIcon = styled.img`
     z-index: 0;
     mix-blend-mode: multiply; /* 배경과 섞이도록 설정 */
 `;
-export const CharacterInfoView = () => {
-    const character = useSelector(
-        (state) => state.dfCharacter.selectedCharacter,
-    );
-    useEffect(() => {
-        console.log(character);
-    }, []);
+export const CharacterItemStatus = ({ character }) => {
     return (
-        <div>
-            <h1>CharacterInfoView</h1>
+        <Container>
             <CharacterCard>
                 <CardImageContainer>
                     <CardHeaderContainer>
@@ -107,6 +105,7 @@ export const CharacterInfoView = () => {
                     <CardText size={10}>길드이름</CardText>
                 </CardTextContainer>
             </CharacterCard>
-        </div>
+            <CharacterEquipmentList />
+        </Container>
     );
 };
