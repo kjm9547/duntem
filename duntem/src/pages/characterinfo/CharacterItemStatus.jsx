@@ -58,6 +58,10 @@ const ItemIcon = styled.img`
     z-index: 0;
     mix-blend-mode: multiply; /* 배경과 섞이도록 설정 */
 `;
+const CharacterImg = styled.img`
+    height: 300px;
+    border: 1px solid black;
+`;
 export const CharacterItemStatus = ({ character }) => {
     return (
         <Container>
@@ -92,9 +96,9 @@ export const CharacterItemStatus = ({ character }) => {
                             }
                         ></ItemIcon>
                     </CardHeaderContainer>
-                    <img
+                    <CharacterImg
                         src={`https://img-api.neople.co.kr/df/servers/${character.serverId}/characters/${character.characterId}?zoom=600x690`}
-                    ></img>
+                    ></CharacterImg>
                 </CardImageContainer>
                 <CardTextContainer>
                     <CardText size={12}>{character.fame}</CardText>

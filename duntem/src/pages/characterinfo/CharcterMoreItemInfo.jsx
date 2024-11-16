@@ -1,3 +1,6 @@
+import styled from "styled-components";
+
+const Container = styled.div``;
 export const CharacterMoreItemInfo = () => {
-    return <div>hh2</div>;
+    return <Container>hh2</Container>;
 };

@@ -5,10 +5,11 @@ import { dfService } from "../../service/dfService";
 import { CharacterItemStatus } from "./CharacterItemStatus";
 import { CharacterMoreItemInfo } from "./CharcterMoreItemInfo";
 import { setEquipmentList } from "../../redux/reducer/dfCharacterSlice";
+import { AdDisplay } from "../../component/AdDisplay";
 
 const Container = styled.div`
     display: grid;
-    grid-template-columns: 1.4fr 7.2fr 1.4fr;
+    grid-template-columns: 1.6fr 6.8fr 1.6fr;
 `;
 const AdsDisplayContainer = styled.div`
     background-color: #f1f1f1;
@@ -30,7 +31,7 @@ export const CharacterInfoContent = () => {
     }, []);
     return (
         <Container>
-            <AdsDisplayContainer>{/* <AdDisplay/> */}</AdsDisplayContainer>
+            <AdsDisplayContainer>{/* <AdDisplay /> */}</AdsDisplayContainer>
             <div>
                 <CharacterItemStatus character={character} />
                 <CharacterMoreItemInfo />
