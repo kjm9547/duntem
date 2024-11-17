@@ -1,9 +1,10 @@
 import styled from "styled-components";
-import { itemIconPathList } from "../../data/itemIconPathList";
+
 import { CharacterEquipmentList } from "./CharacterEquipmentList";
+import { itemIconPathList } from "../../data/itemIconPathList";
 
 const Container = styled.div`
-    border: 1px solid black;
+    padding: 25px;
     flex-direction: row;
     display: flex;
 `;
@@ -17,21 +18,19 @@ const CharacterCard = styled.div`
     height: 400px;
     flex-direction: column;
     align-items: center;
-    border: 1px solid #e0e0e0;
-    &:hover {
-        border: 2px solid #5a5afd;
-    }
+    border: 2px solid #cbcbcb;
 `;
 const CardHeaderContainer = styled.div`
     flex-direction: column;
-    height: 65px;
+    height: 45px;
     width: 100%;
 `;
 const CardImageContainer = styled.div`
     display: flex;
-    flex: 0.5;
     flex-direction: column;
     height: 100%;
+
+    margin-top: -20px;
 `;
 
 const CardTextContainer = styled.div`
@@ -43,24 +42,17 @@ const CardText = styled.div`
     text-align: center;
     padding-left: 10px;
     padding-right: 10px;
+    color: ${(props) => props.color};
     font-size: ${(props) => props.size + "px"};
     border: ${(props) =>
         props.value === "jobName" ? "0.3px solid #DCDCDC " : null};
     border-radius: 8px;
     background-color: ${(props) =>
-        props.value === "jobName" ? "#f5f5f5 " : null};
+        props.value === "jobName" ? "#282828 " : null};
 `;
-const ItemIcon = styled.img`
-    border-radius: 5px;
-    margin-left: 3px;
-    filter: ${(props) => `saturate(${props.saturate})`};
-    position: relative;
-    z-index: 0;
-    mix-blend-mode: multiply; /* 배경과 섞이도록 설정 */
-`;
+
 const CharacterImg = styled.img`
-    height: 300px;
-    border: 1px solid black;
+    height: 280px;
 `;
 export const CharacterItemStatus = ({ character }) => {
     return (
@@ -68,48 +60,28 @@ export const CharacterItemStatus = ({ character }) => {
             <CharacterCard>
                 <CardImageContainer>
                     <CardHeaderContainer>
-                        <img
-                            src={
-                                character.isEndSpec.isAvatar
-                                    ? itemIconPathList.onAvatar
-                                    : itemIconPathList.offAvatar
-                            }
-                        />
-                        <img
-                            src={
-                                character.isEndSpec?.isAoura
-                                    ? itemIconPathList.onAoura
-                                    : itemIconPathList.offAoura
-                            }
-                        />
-                        <img
-                            src={
-                                character.isEndSpec?.isCreature
-                                    ? itemIconPathList.onCreature
-                                    : itemIconPathList.offCreature
-                            }
-                        />
-                        <ItemIcon
-                            src={character.isEndSpec?.isSwitching[1]}
-                            saturate={
-                                character.isEndSpec?.isSwitching[0] ? 1 : 0
-                            }
-                        ></ItemIcon>
+                        <CardText color="#CA8D37" size={12}>
+                            <img src={`${itemIconPathList.frame_icons}`} />
+                            {character.fame}
+                        </CardText>
+                        <CardText size={18}>{character.characterName}</CardText>
+
+                        <CardText size={10}>길드이름</CardText>
                     </CardHeaderContainer>
                     <CharacterImg
                         src={`https://img-api.neople.co.kr/df/servers/${character.serverId}/characters/${character.characterId}?zoom=600x690`}
                     ></CharacterImg>
                 </CardImageContainer>
                 <CardTextContainer>
-                    <CardText size={12}>{character.fame}</CardText>
-                    <CardText size={14}>{character.characterName}</CardText>
-                    <CardText value={"jobName"} size={12}>
+                    <CardText value={"jobName"} size={22} color="#ffffff">
                         {character.jobGrowName}
                     </CardText>
-                    <CardText size={10}>길드이름</CardText>
+                    <CardText value={"jobName"} size={16} color="#ffffff">
+                        {character.jobName}
+                    </CardText>
                 </CardTextContainer>
             </CharacterCard>
-            <CharacterEquipmentList />
+            <CharacterEquipmentList character={character} />
         </Container>
     );
 };

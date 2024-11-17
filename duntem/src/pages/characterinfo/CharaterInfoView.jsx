@@ -6,10 +6,8 @@ import { CharacterInfoContent } from "./CharacterInfoContent";
 
 const Container = styled.div`
     flex-direction: column;
-    width: 97.2vw;
+    width: 100vw;
     height: 100vh;
-    border: 1px solid black;
-    padding: 25px;
     padding-bottom: 0px;
 `;
 export const CharacterInfoView = () => {

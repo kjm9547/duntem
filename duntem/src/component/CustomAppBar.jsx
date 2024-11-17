@@ -28,7 +28,7 @@ export const CustomAppBar = () => {
     };
 
     return (
-        <Box sx={{ flexGrow: 1 }}>
+        <Box sx={{ flexGrow: 1, marginBottom: 5 }}>
             <AppBar position="static" color="inherit">
                 <Toolbar>
                     <IconButton

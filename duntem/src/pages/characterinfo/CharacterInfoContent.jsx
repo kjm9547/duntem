@@ -9,7 +9,7 @@ import { AdDisplay } from "../../component/AdDisplay";
 
 const Container = styled.div`
     display: grid;
-    grid-template-columns: 1.6fr 6.8fr 1.6fr;
+    grid-template-columns: 1.5fr 7fr 1.5fr;
 `;
 const AdsDisplayContainer = styled.div`
     background-color: #f1f1f1;
