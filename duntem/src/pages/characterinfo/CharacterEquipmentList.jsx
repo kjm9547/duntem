@@ -49,27 +49,27 @@ const EquipmentContainer = styled.div`
 `;
 export const CharacterEquipmentList = ({ character }) => {
     const equipments = useSelector(
-        (state) => state.dfCharacter.equipmentList.equipment,
+        (state) => state.dfCharacter.equipmentList?.equipment,
     );
     const [itemSlots, setItemSlots] = useState([]);
     const [fusionSlots, setFusionSlots] = useState([]);
     useEffect(() => {
-        console.log(equipments);
-        const tmp = characterEquipment.map((row) => [...row]); // 깊은 복사
-        const newArr = characterEquipment.map((row) => [...row]);
-        characterEquipment.map((v, row) => {
-            v.map((slot, index) => {
-                const value = equipments.find(
-                    (item) => item?.slotId === slot?.slotId,
-                );
-                newArr[row][index] = value?.upgradeInfo;
-                tmp[row][index] = value;
+        if (equipments) {
+            const tmp = characterEquipment.map((row) => [...row]); // 깊은 복사
+            const newArr = characterEquipment.map((row) => [...row]);
+            characterEquipment.map((v, row) => {
+                v.map((slot, index) => {
+                    const value = equipments.find(
+                        (item) => item?.slotId === slot?.slotId,
+                    );
+                    newArr[row][index] = value?.upgradeInfo;
+                    tmp[row][index] = value;
+                });
             });
-        });
-        console.log("converted arr", newArr);
-        setFusionSlots(newArr);
-        setItemSlots(tmp);
-    }, []);
+            setFusionSlots(newArr);
+            setItemSlots(tmp);
+        }
+    }, [equipments]);
     return (
         <Container>
             <ListHeader>
