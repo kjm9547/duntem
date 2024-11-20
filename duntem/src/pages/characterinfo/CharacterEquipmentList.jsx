@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { characterEquipment } from "../../data/characterEquipment";
 import { Button, ButtonGroup } from "@mui/material";
 import { itemIconPathList } from "../../data/itemIconPathList";
 import { Margin } from "../../component/Margin";
+import { setFusionList } from "../../redux/reducer/dfCharacterSlice";
 
 const Container = styled.div`
     margin-left: 50px;
@@ -42,7 +43,6 @@ const ItemIcon = styled.img`
 const ListHeader = styled.div`
     display: flex;
     flex-direction: column;
-    border: 1px solid black;
 `;
 const EquipmentContainer = styled.div`
     display: flex;
@@ -53,6 +53,7 @@ export const CharacterEquipmentList = ({ character }) => {
     );
     const [itemSlots, setItemSlots] = useState([]);
     const [fusionSlots, setFusionSlots] = useState([]);
+    const dispatch = useDispatch();
     useEffect(() => {
         if (equipments) {
             const tmp = characterEquipment.map((row) => [...row]); // 깊은 복사
@@ -66,6 +67,7 @@ export const CharacterEquipmentList = ({ character }) => {
                     tmp[row][index] = value;
                 });
             });
+            dispatch(setFusionList(newArr));
             setFusionSlots(newArr);
             setItemSlots(tmp);
         }

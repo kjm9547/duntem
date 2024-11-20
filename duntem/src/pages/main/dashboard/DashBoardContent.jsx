@@ -9,6 +9,7 @@ import { ModalEditCard } from "./modalCard/ModalEditCard";
 import { useCharactor } from "../../../hooks/useCharactor";
 import { useNavigate, useNavigation } from "react-router-dom";
 import { setSelectedCharacter } from "../../../redux/reducer/dfCharacterSlice";
+import { Margin } from "../../../component/Margin";
 
 const Container = styled.div`
     display: flex;
@@ -255,7 +256,13 @@ export const DashBoardContent = ({ onClickAddCharactorButton, isEditMode }) => {
                                 ></img>
                             </CardImageContainer>
                             <CardTextContainer>
-                                <CardText size={12}>{value.fame}</CardText>
+                                <CardText size={12}>
+                                    <img
+                                        src={`${itemIconPathList.frame_icons}`}
+                                    />
+                                    <Margin mr={3} />
+                                    {value.fame}
+                                </CardText>
                                 <CardText size={14}>
                                     {value.characterName}
                                 </CardText>

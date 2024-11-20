@@ -13,6 +13,7 @@ export const dfCharacterSlice = createSlice({
         serverId: "",
         selectedCharacter: null,
         equipmentList: null,
+        fusionList: null,
     },
     reducers: {
         setClickedCharacterData: (state, action) => {
@@ -34,12 +35,16 @@ export const dfCharacterSlice = createSlice({
         setEquipmentList: (state, action) => {
             state.equipmentList = action.payload;
         },
+        setFusionList: (state, action) => {
+            state.fusionList = action.payload;
+        },
     },
 });
 export const {
     setClickedCharacterData,
     setSelectedCharacter,
     setEquipmentList,
+    setFusionList,
 } = dfCharacterSlice.actions;
 
 export default dfCharacterSlice.reducer;

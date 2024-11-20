@@ -1,5 +1,5 @@
 import { Button, ButtonGroup } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { EquipmentInfoCard } from "../../component/EquipmentInfoCard";
 import { useSelector } from "react-redux";
@@ -20,11 +20,15 @@ export const CharacterMoreItemInfo = () => {
         { id: 1, value: "equipment" },
         { id: 2, value: "avarta" },
     ]);
+    const titleTag = ["장비", "강화", "마법부여", "종결여부"];
     const equipments = useSelector(
         (state) => state.dfCharacter.equipmentList?.equipment,
     );
     const [showEuipmentDetailList, setShowEuipmentDetailList] =
         useState(equipments);
+    const fusionStonList = useSelector(
+        (state) => state.dfCharacter.fusionStonList,
+    );
     const onClickSelectButton = (index) => {
         if (index === 0) {
             //setShowEuipmentDetailList to equipment

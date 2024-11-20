@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import styled from "styled-components";
 import { SeperateLine } from "./SeperateLine";
 import { Margin } from "./Margin";
+import { colors } from "../color/colors";
 
 const Container = styled.div`
     display: flex;
@@ -19,12 +20,12 @@ const ItemImg = styled.img`
 `;
 const ItemInfoContainer = styled.div`
     width: 100%;
-    border: 1px solid black;
 `;
 const ItemText = styled.span`
     width: ${(props) => `${props.width}px`};
     text-align: center;
     margin-right: 10px;
+    color: ${(props) => (props.color ? props.color : null)};
 `;
 export const EquipmentInfoCard = ({ data }) => {
     useEffect(() => {
@@ -51,13 +52,39 @@ export const EquipmentInfoCard = ({ data }) => {
             <ItemImg
                 src={`https://img-api.neople.co.kr/df/items/${data.itemId}`}
             />
+            <Margin mr={5} />
+            {data?.upgradeInfo?.itemId && (
+                <ItemImg
+                    src={`https://img-api.neople.co.kr/df/items/${data?.upgradeInfo?.itemId}`}
+                />
+            )}
             <Margin mr={10} />
             <ItemMargin />
-            <ItemText width={50}>{"+ " + data.reinforce}</ItemText>
+            <ItemText
+                width={50}
+                color={
+                    data.amplificationName
+                        ? colors.reinforce_amplification
+                        : colors.reinforce_upgrade
+                }
+            >
+                {"+ " + data.reinforce}
+            </ItemText>
             <ItemMargin />
-            <ItemText width={300}>{data.itemName}</ItemText>
+            <ItemText width={300}>
+                {data.itemName}
+                <br />
+                {data?.upgradeInfo?.itemName}{" "}
+            </ItemText>
+
             <ItemMargin />
-            <ItemInfoContainer>1</ItemInfoContainer>
+            <ItemInfoContainer>
+                <ItemText width={300}>
+                    {data.enchant?.status[0].value}
+                    <br />
+                    {data?.enchant?.explain}{" "}
+                </ItemText>
+            </ItemInfoContainer>
         </Container>
     );
 };
