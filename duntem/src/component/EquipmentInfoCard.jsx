@@ -19,7 +19,9 @@ const ItemImg = styled.img`
     height: 45px;
 `;
 const ItemInfoContainer = styled.div`
-    width: 100%;
+    width: ${(props) => `${props.width}px`};
+
+    text-align: center;
 `;
 const ItemText = styled.span`
     width: ${(props) => `${props.width}px`};
@@ -27,10 +29,16 @@ const ItemText = styled.span`
     margin-right: 10px;
     color: ${(props) => (props.color ? props.color : null)};
 `;
-export const EquipmentInfoCard = ({ data }) => {
+export const EquipmentInfoCard = ({ data, itemData }) => {
+    const colorMap = {
+        태초: colors.itemRarity_beginning,
+        에픽: colors.itemRarity_epic,
+        레전더리: colors.itemRarity_legendary,
+    };
     useEffect(() => {
-        console.log(data);
+        console.log(colorMap[itemData?.itemRarity]);
     }, []);
+
     const ItemMargin = () => {
         return (
             <>
@@ -71,12 +79,16 @@ export const EquipmentInfoCard = ({ data }) => {
                 {"+ " + data.reinforce}
             </ItemText>
             <ItemMargin />
-            <ItemText width={300}>
-                {data.itemName}
-                <br />
-                {data?.upgradeInfo?.itemName}{" "}
-            </ItemText>
-
+            <ItemInfoContainer width={200}>
+                <ItemText>{data.itemName}</ItemText>
+                <ItemText
+                    width={300}
+                    color={`${colorMap[itemData?.itemRarity]}`}
+                >
+                    <br />
+                    {itemData?.itemName}{" "}
+                </ItemText>
+            </ItemInfoContainer>
             <ItemMargin />
             <ItemInfoContainer>
                 <ItemText width={300}>

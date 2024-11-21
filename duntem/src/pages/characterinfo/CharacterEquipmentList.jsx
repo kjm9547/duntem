@@ -5,7 +5,6 @@ import { characterEquipment } from "../../data/characterEquipment";
 import { Button, ButtonGroup } from "@mui/material";
 import { itemIconPathList } from "../../data/itemIconPathList";
 import { Margin } from "../../component/Margin";
-import { setFusionList } from "../../redux/reducer/dfCharacterSlice";
 
 const Container = styled.div`
     margin-left: 50px;
@@ -67,7 +66,6 @@ export const CharacterEquipmentList = ({ character }) => {
                     tmp[row][index] = value;
                 });
             });
-            dispatch(setFusionList(newArr));
             setFusionSlots(newArr);
             setItemSlots(tmp);
         }
@@ -136,7 +134,6 @@ export const CharacterEquipmentList = ({ character }) => {
                 <div>
                     {fusionSlots &&
                         fusionSlots.map((list, row) => {
-                            console.log(list);
                             return (
                                 <Row>
                                     {list?.map((value, index) => {

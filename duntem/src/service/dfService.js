@@ -72,7 +72,6 @@ export const dfService = () => {
     };
 
     const getMultItemDetailInfo = async (itemIds) => {
-        console.log(itemIds);
         const path = import.meta.env.VITE_API_URL + `multItem/${itemIds}`;
         try {
             const res = await axios.get(path);

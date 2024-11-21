@@ -38,6 +38,7 @@ export const dfCharacterSlice = createSlice({
         setFusionList: (state, action) => {
             state.fusionList = action.payload;
         },
+        //@param itemId 조회하여 융합석 정보 가져옵니다.
     },
 });
 export const {
