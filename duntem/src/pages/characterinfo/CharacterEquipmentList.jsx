@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { characterEquipment } from "../../data/characterEquipment";
 import { Button, ButtonGroup } from "@mui/material";
@@ -42,7 +42,6 @@ const ItemIcon = styled.img`
 const ListHeader = styled.div`
     display: flex;
     flex-direction: column;
-    border: 1px solid black;
 `;
 const EquipmentContainer = styled.div`
     display: flex;
@@ -53,6 +52,7 @@ export const CharacterEquipmentList = ({ character }) => {
     );
     const [itemSlots, setItemSlots] = useState([]);
     const [fusionSlots, setFusionSlots] = useState([]);
+    const dispatch = useDispatch();
     useEffect(() => {
         if (equipments) {
             const tmp = characterEquipment.map((row) => [...row]); // 깊은 복사
@@ -134,7 +134,6 @@ export const CharacterEquipmentList = ({ character }) => {
                 <div>
                     {fusionSlots &&
                         fusionSlots.map((list, row) => {
-                            console.log(list);
                             return (
                                 <Row>
                                     {list?.map((value, index) => {

@@ -27,7 +27,6 @@ export const CharacterInfoContent = () => {
         getCharacterItemInfo(character.serverId, character.characterId).then(
             (res) => dispatch(setEquipmentList(res)),
         );
-        console.log(character);
     }, []);
     return (
         <Container>

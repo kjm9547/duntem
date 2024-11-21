@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import styled from "styled-components";
 import { SeperateLine } from "./SeperateLine";
 import { Margin } from "./Margin";
+import { colors } from "../color/colors";
 
 const Container = styled.div`
     display: flex;
@@ -18,18 +19,26 @@ const ItemImg = styled.img`
     height: 45px;
 `;
 const ItemInfoContainer = styled.div`
-    width: 100%;
-    border: 1px solid black;
+    width: ${(props) => `${props.width}px`};
+
+    text-align: center;
 `;
 const ItemText = styled.span`
     width: ${(props) => `${props.width}px`};
     text-align: center;
     margin-right: 10px;
+    color: ${(props) => (props.color ? props.color : null)};
 `;
-export const EquipmentInfoCard = ({ data }) => {
+export const EquipmentInfoCard = ({ data, itemData }) => {
+    const colorMap = {
+        태초: colors.itemRarity_beginning,
+        에픽: colors.itemRarity_epic,
+        레전더리: colors.itemRarity_legendary,
+    };
     useEffect(() => {
-        console.log(data);
+        console.log(colorMap[itemData?.itemRarity]);
     }, []);
+
     const ItemMargin = () => {
         return (
             <>
@@ -51,13 +60,43 @@ export const EquipmentInfoCard = ({ data }) => {
             <ItemImg
                 src={`https://img-api.neople.co.kr/df/items/${data.itemId}`}
             />
+            <Margin mr={5} />
+            {data?.upgradeInfo?.itemId && (
+                <ItemImg
+                    src={`https://img-api.neople.co.kr/df/items/${data?.upgradeInfo?.itemId}`}
+                />
+            )}
             <Margin mr={10} />
             <ItemMargin />
-            <ItemText width={50}>{"+ " + data.reinforce}</ItemText>
+            <ItemText
+                width={50}
+                color={
+                    data.amplificationName
+                        ? colors.reinforce_amplification
+                        : colors.reinforce_upgrade
+                }
+            >
+                {"+ " + data.reinforce}
+            </ItemText>
             <ItemMargin />
-            <ItemText width={300}>{data.itemName}</ItemText>
+            <ItemInfoContainer width={200}>
+                <ItemText>{data.itemName}</ItemText>
+                <ItemText
+                    width={300}
+                    color={`${colorMap[itemData?.itemRarity]}`}
+                >
+                    <br />
+                    {itemData?.itemName}{" "}
+                </ItemText>
+            </ItemInfoContainer>
             <ItemMargin />
-            <ItemInfoContainer>1</ItemInfoContainer>
+            <ItemInfoContainer>
+                <ItemText width={300}>
+                    {data.enchant?.status[0].value}
+                    <br />
+                    {data?.enchant?.explain}{" "}
+                </ItemText>
+            </ItemInfoContainer>
         </Container>
     );
 };

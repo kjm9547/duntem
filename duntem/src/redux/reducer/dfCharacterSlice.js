@@ -13,6 +13,7 @@ export const dfCharacterSlice = createSlice({
         serverId: "",
         selectedCharacter: null,
         equipmentList: null,
+        fusionList: null,
     },
     reducers: {
         setClickedCharacterData: (state, action) => {
@@ -34,12 +35,17 @@ export const dfCharacterSlice = createSlice({
         setEquipmentList: (state, action) => {
             state.equipmentList = action.payload;
         },
+        setFusionList: (state, action) => {
+            state.fusionList = action.payload;
+        },
+        //@param itemId 조회하여 융합석 정보 가져옵니다.
     },
 });
 export const {
     setClickedCharacterData,
     setSelectedCharacter,
     setEquipmentList,
+    setFusionList,
 } = dfCharacterSlice.actions;
 
 export default dfCharacterSlice.reducer;

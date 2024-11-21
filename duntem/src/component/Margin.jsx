@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const Container = styled.div`
+const Container = styled.span`
     margin-right: ${(props) => `${props.mr}px`};
 `;
 export const Margin = ({ mr }) => {
