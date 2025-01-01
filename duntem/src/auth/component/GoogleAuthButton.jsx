@@ -3,8 +3,8 @@ import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import styled from "styled-components";
 import { firebaseInitailizer } from "../../firebase";
 import { useEffect, useState } from "react";
-import { useSignFb } from "../../hooks/useSignFb";
-import { useLocalStore } from "../../hooks/useLocalStore";
+import { authService } from "../../utils/authService";
+import { authUtil } from "../../utils/authUtil";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { signedGoogleUser } from "../../redux/reducer/userSlice";
@@ -27,9 +27,9 @@ export const GoogleAuthButton = () => {
 
     const dispatch = useDispatch();
     const { checkFirebaseIdExist, insertFirbaseUserInfo, getFirebaseUserData } =
-        useSignFb();
+        authService();
 
-    const { addUserDataToStorage } = useLocalStore();
+    const { addUserDataToStorage } = authUtil();
     const navigate = useNavigate();
     const registUserData = async (data) => {
         console.log("auth info = ", data);
