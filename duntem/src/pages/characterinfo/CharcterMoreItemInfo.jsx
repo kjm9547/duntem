@@ -5,12 +5,12 @@ import { EquipmentInfoCard } from "../../component/EquipmentInfoCard";
 import { useDispatch, useSelector } from "react-redux";
 import { dfService } from "../../service/dfService";
 import { setFusionList } from "../../redux/reducer/dfCharacterSlice";
-
+import { useItemDetailList } from "../../hooks/useItemList";
 const Container = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 100%;
+    height: auto;
 `;
 const ItemListContainer = styled.div`
     display: flex;
@@ -18,19 +18,19 @@ const ItemListContainer = styled.div`
     padding: 25px;
 `;
 export const CharacterMoreItemInfo = () => {
-    const [itemSelectGroup, setItemSelectGroup] = useState([
-        { id: 1, value: "equipment" },
-        { id: 2, value: "avarta" },
-    ]);
-    const { getMultItemDetailInfo } = dfService();
-    const titleTag = ["장비", "강화", "마법부여", "종결여부"];
-    const equipments = useSelector(
-        (state) => state.dfCharacter.equipmentList?.equipment,
-    );
-    const [showEuipmentDetailList, setShowEuipmentDetailList] =
-        useState(equipments);
-    const fusionList = useSelector((state) => state.dfCharacter.fusionList);
-    const dispatch = useDispatch();
+    const {
+        equipments,
+        fusionList,
+        showEuipmentDetailList,
+        updateEuipmentList,
+    } = useItemDetailList();
+    useEffect(() => {
+        // 캐릭터의 장비 아이디를 추출하여 api 요청
+        const itemIdList = showEuipmentDetailList.map(
+            (v) => v?.upgradeInfo?.itemId,
+        );
+        updateEuipmentList(itemIdList);
+    }, []);
     const onClickSelectButton = (index) => {
         if (index === 0) {
             //setShowEuipmentDetailList to equipment
@@ -39,17 +39,6 @@ export const CharacterMoreItemInfo = () => {
         }
         setItemSelectGroup;
     };
-    useEffect(() => {
-        console.log("showEuipmentDetailList :", showEuipmentDetailList);
-        const itemIdList = showEuipmentDetailList.map(
-            (v) => v?.upgradeInfo?.itemId,
-        );
-
-        // showEuipmentDetailList.filter((v) => {});
-        getMultItemDetailInfo(itemIdList).then((res) => {
-            dispatch(setFusionList(res));
-        });
-    }, []);
 
     return (
         <Container>
@@ -72,7 +61,7 @@ export const CharacterMoreItemInfo = () => {
                 <Button>Three</Button>
             </ButtonGroup>
             <ItemListContainer>
-                {showEuipmentDetailList.map((item) => {
+                {equipments.map((item) => {
                     const itemData = fusionList.rows.find(
                         (v) => v.itemId === item.upgradeInfo?.itemId,
                     );
